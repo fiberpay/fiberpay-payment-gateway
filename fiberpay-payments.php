@@ -48,7 +48,7 @@ function fiberpay_init_gateway_class() {
 		 */
 		public function __construct() {
 
-			$this->id                 = 'fp';
+			$this->id                 = 'fiberpay_payments';
 			$this->icon               = apply_filters( 'woocommerce_bacs_icon', '' );
 			$this->has_fields         = false;
 			$this->method_title       = __( 'Fiberpay', 'woocommerce' );
