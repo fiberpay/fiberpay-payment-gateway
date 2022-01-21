@@ -67,16 +67,12 @@ function fiberpay_init_gateway_class() {
 			$this->description  = $this->get_option('description');
 			$this->instructions = $this->get_option('instructions');
 			$this->collect_order_code = $this->get_option('collect_order_code');
+			$this->is_test_env = $this->get_option('is_test_env');
 			$this->api_key = $this->get_option('api_key');
 			$this->secret_key = $this->get_option('secret_key');
 
-
-			$orderCode = 'mu3aj976eygk';
-			$apiKey = '7qm09ejjRHsv8LOO';
-			$secret = 'SEpDo5tJq1OBYoWAGkZMswdlYuLezybgQ7ADrX6XcQ7fzsbeFvd5NCUm2bYzlokIRl7Gv9HpV3zCYJq7h3JyW2UrnDuCnrxJf5ja2QLmuA8xfNBETmseWU4wOeWPIn59';
-
-			$client = new \FiberPay\FiberPayClient($apiKey, $secret, true);
-			$ret = json_decode($client->getCollectOrderInfo($orderCode));
+			$client = new \FiberPay\FiberPayClient($this->api_key, $this->secret_key, $this->is_test_env);
+			$ret = json_decode($client->getCollectOrderInfo($this->collect_order_code));
 
 			// Actions.
 			add_action('woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options'));
@@ -110,6 +106,14 @@ function fiberpay_init_gateway_class() {
 					'type'        => 'textarea',
 					'description' => __('Payment method description that the customer will see on your checkout.', 'woocommerce'),
 					'default'     => __('Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.', 'woocommerce'),
+					'desc_tip'    => true,
+				],
+				'is_test_env'     => [
+					'title'       => __('Test Environment', 'woocommerce'),
+					'type'        => 'checkbox',
+					'label'   => __('Test Environment', 'woocommerce'),
+					'description' => __('Check for test environment usage', 'woocommerce'),
+					'default' => 'no',
 					'desc_tip'    => true,
 				],
 				'api_key'     => [
@@ -198,6 +202,21 @@ function fiberpay_init_gateway_class() {
 			];
 
 		}
+
+		/**
+		 * Return whether or not this gateway still requires setup to function.
+		 *
+		 * When this gateway is toggled on via AJAX, if this returns true a
+		 * redirect will occur to the settings page instead.
+		 *
+		 * @since 3.4.0
+		 * @return bool
+		 */
+		public function needs_setup() {
+			return false;
+		}
+
 	}
+
 
 }
