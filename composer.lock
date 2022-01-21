@@ -1,0 +1,49 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "beab0dc8b3f65d48eb463b60bba8f7f6",
+    "packages": [
+        {
+            "name": "fiberpay/fiberpay-php",
+            "version": "0.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fiberpay/fiberpay-php.git",
+                "reference": "b6732e638bf31dfe3404d8ed39df202dac37d6ea"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fiberpay/fiberpay-php/zipball/b6732e638bf31dfe3404d8ed39df202dac37d6ea",
+                "reference": "b6732e638bf31dfe3404d8ed39df202dac37d6ea",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "FiberPay\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "homepage": "https://fiberpay.pl/",
+            "time": "2021-10-10T18:22:31+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
+}

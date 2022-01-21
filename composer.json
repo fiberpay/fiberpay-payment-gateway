@@ -1,0 +1,5 @@
+{
+    "require": {
+        "fiberpay/fiberpay-php": "^0.1.5"
+    }
+}
