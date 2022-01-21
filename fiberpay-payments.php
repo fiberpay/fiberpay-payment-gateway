@@ -16,13 +16,13 @@ if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
 	return;
 }
 
-function fiberpay_add_gateway_class( $gateways ) {
+function fiberpay_add_gateway_class($gateways) {
 	$gateways[] = 'Fiberpay_WC_Payment_Gateway';
 	return $gateways;
 }
-add_filter( 'woocommerce_payment_gateways', 'fiberpay_add_gateway_class' );
+add_filter('woocommerce_payment_gateways', 'fiberpay_add_gateway_class');
 
-add_action( 'plugins_loaded', 'fiberpay_init_gateway_class', 11 );
+add_action('plugins_loaded', 'fiberpay_init_gateway_class', 11);
 
 function fiberpay_init_gateway_class() {
 	/**
@@ -50,26 +50,29 @@ function fiberpay_init_gateway_class() {
 		public function __construct() {
 
 			$this->id                 = 'fiberpay_payments';
-			$this->icon               = apply_filters( 'woocommerce_bacs_icon', '' );
+			$this->icon               = '';
 			$this->has_fields         = false;
-			$this->method_title       = __( 'Fiberpay', 'woocommerce' );
-			$this->method_description = __( 'Fiberpay payment gateway', 'woocommerce' );
+			$this->method_title       = __('Fiberpay', 'woocommerce');
+			$this->method_description = __('Fiberpay payment gateway', 'woocommerce');
 
 			// Load the settings.
 			$this->init_form_fields();
 			$this->init_settings();
 
 			// Define user set variables.
-			$this->title        = $this->get_option( 'title' );
-			$this->description  = $this->get_option( 'description' );
-			$this->instructions = $this->get_option( 'instructions' );
+			$this->title        = $this->get_option('title');
+			$this->description  = $this->get_option('description');
+			$this->instructions = $this->get_option('instructions');
+			$this->collect_order_code = $this->get_option('collect_order_code');
+			$this->api_key = $this->get_option('api_key');
+			$this->secret_key = $this->get_option('secret_key');
 
 			// Actions.
-			add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
-			add_action( 'woocommerce_thankyou_bacs', array( $this, 'thankyou_page' ) );
+			add_action('woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options'));
+			add_action('woocommerce_thankyou_bacs', array( $this, 'thankyou_page'));
 
 			// Customer Emails.
-			add_action( 'woocommerce_email_before_order_table', array( $this, 'email_instructions' ), 10, 3 );
+			add_action('woocommerce_email_before_order_table', array( $this, 'email_instructions'), 10, 3);
 		}
 
 		/**
@@ -79,29 +82,47 @@ function fiberpay_init_gateway_class() {
 
 			$this->form_fields = [
 				'enabled'         => [
-					'title'   => __( 'Enable/Disable', 'woocommerce' ),
+					'title'   => __('Enable/Disable', 'woocommerce'),
 					'type'    => 'checkbox',
-					'label'   => __( 'Enable Fiberpay payments', 'woocommerce' ),
+					'label'   => __('Enable Fiberpay payments', 'woocommerce'),
 					'default' => 'no',
 				],
 				'title'           => [
-					'title'       => __( 'Title', 'woocommerce' ),
+					'title'       => __('Title', 'woocommerce'),
 					'type'        => 'text',
-					'description' => __( 'This controls the title which the user sees during checkout.', 'woocommerce' ),
-					'default'     => __( 'Fiberpay quick money transfer', 'woocommerce' ),
+					'description' => __('This controls the title which the user sees during checkout.', 'woocommerce'),
+					'default'     => __('Fiberpay quick money transfer', 'woocommerce'),
 					'desc_tip'    => true,
 				],
 				'description'     => [
-					'title'       => __( 'Description', 'woocommerce' ),
+					'title'       => __('Description', 'woocommerce'),
 					'type'        => 'textarea',
-					'description' => __( 'Payment method description that the customer will see on your checkout.', 'woocommerce' ),
-					'default'     => __( 'Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.', 'woocommerce' ),
+					'description' => __('Payment method description that the customer will see on your checkout.', 'woocommerce'),
+					'default'     => __('Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.', 'woocommerce'),
+					'desc_tip'    => true,
+				],
+				'api_key'     => [
+					'title'       => __('Api Key', 'woocommerce'),
+					'type'        => 'text',
+					'description' => __('Your Fiberpay Api Key', 'woocommerce'),
+					'desc_tip'    => true,
+				],
+				'secret_key'     => [
+					'title'       => __('Secret Key', 'woocommerce'),
+					'type'        => 'text',
+					'description' => __('Your Fiberpay Secret Key', 'woocommerce'),
+					'desc_tip'    => true,
+				],
+				'collect_order_code'     => [
+					'title'       => __('Collect order code', 'woocommerce'),
+					'type'        => 'text',
+					'description' => __('Your Fiberpay Collect Order Code', 'woocommerce'),
 					'desc_tip'    => true,
 				],
 				'instructions'    => [
-					'title'       => __( 'Instructions', 'woocommerce' ),
+					'title'       => __('Instructions', 'woocommerce'),
 					'type'        => 'textarea',
-					'description' => __( 'Instructions that will be added to the thank you page and emails.', 'woocommerce' ),
+					'description' => __('Instructions that will be added to the thank you page and emails.', 'woocommerce'),
 					'default'     => '',
 					'desc_tip'    => true,
 				],
@@ -117,7 +138,7 @@ function fiberpay_init_gateway_class() {
 		public function thankyou_page( $order_id ) {
 
 			if ( $this->instructions ) {
-				echo wp_kses_post( wpautop( wptexturize( wp_kses_post( $this->instructions ) ) ) );
+				echo wp_kses_post( wpautop( wptexturize( wp_kses_post( $this->instructions ) ) ));
 			}
 
 		}
@@ -131,9 +152,9 @@ function fiberpay_init_gateway_class() {
 		 */
 		public function email_instructions( $order, $sent_to_admin, $plain_text = false ) {
 
-			if ( ! $sent_to_admin && 'bacs' === $order->get_payment_method() && $order->has_status( 'on-hold' ) ) {
+			if ( ! $sent_to_admin && 'bacs' === $order->get_payment_method() && $order->has_status('on-hold') ) {
 				if ( $this->instructions ) {
-					echo wp_kses_post( wpautop( wptexturize( $this->instructions ) ) . PHP_EOL );
+					echo wp_kses_post( wpautop( wptexturize( $this->instructions ) ) . PHP_EOL);
 				}
 			}
 
@@ -147,11 +168,11 @@ function fiberpay_init_gateway_class() {
 		 */
 		public function process_payment( $order_id ) {
 
-			$order = wc_get_order( $order_id );
+			$order = wc_get_order( $order_id);
 
 			if ( $order->get_total() > 0 ) {
 				// Mark as on-hold (we're awaiting the payment).
-				$order->update_status( apply_filters( 'woocommerce_bacs_process_payment_order_status', 'on-hold', $order ), __( 'Awaiting BACS payment', 'woocommerce' ) );
+				$order->update_status( apply_filters('woocommerce_bacs_process_payment_order_status', 'on-hold', $order ), __('Awaiting BACS payment', 'woocommerce'));
 			} else {
 				$order->payment_complete();
 			}
