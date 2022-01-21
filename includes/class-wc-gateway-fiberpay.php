@@ -1,7 +1,5 @@
 <?php
 
-// include  __DIR__ . '/vendor/fiberpay/fiberpay-php/lib/FiberPayClient.php';
-
 /**
 * Fiberpay_WC_Payment_Gateway.
 *

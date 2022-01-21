@@ -26,6 +26,7 @@ add_action('plugins_loaded', 'fiberpay_init_gateway_class', 11);
 
 function fiberpay_init_gateway_class() {
 	if(class_exists('WC_Payment_Gateway')) {
-		require_once dirname( __FILE__) . '/includes/class-wc-gateway-fiberpay.php';
+		require_once plugin_dir_path(__FILE__) . '/vendor/fiberpay/fiberpay-php/lib/FiberPayClient.php';
+		require_once plugin_dir_path(__FILE__) . '/includes/class-wc-gateway-fiberpay.php';
 	}
 }
