@@ -16,6 +16,9 @@ if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
 	return;
 }
 
+include  __DIR__ . '/vendor/fiberpay/fiberpay-php/lib/FiberPayClient.php';
+
+
 function fiberpay_add_gateway_class($gateways) {
 	$gateways[] = 'Fiberpay_WC_Payment_Gateway';
 	return $gateways;
@@ -66,6 +69,14 @@ function fiberpay_init_gateway_class() {
 			$this->collect_order_code = $this->get_option('collect_order_code');
 			$this->api_key = $this->get_option('api_key');
 			$this->secret_key = $this->get_option('secret_key');
+
+
+			$orderCode = 'mu3aj976eygk';
+			$apiKey = '7qm09ejjRHsv8LOO';
+			$secret = 'SEpDo5tJq1OBYoWAGkZMswdlYuLezybgQ7ADrX6XcQ7fzsbeFvd5NCUm2bYzlokIRl7Gv9HpV3zCYJq7h3JyW2UrnDuCnrxJf5ja2QLmuA8xfNBETmseWU4wOeWPIn59';
+
+			$client = new \FiberPay\FiberPayClient($apiKey, $secret, true);
+			$ret = json_decode($client->getCollectOrderInfo($orderCode));
 
 			// Actions.
 			add_action('woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options'));

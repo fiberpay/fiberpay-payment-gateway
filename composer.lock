@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "beab0dc8b3f65d48eb463b60bba8f7f6",
+    "content-hash": "8675db43684a29ecebec644a92931da9",
     "packages": [
         {
             "name": "fiberpay/fiberpay-php",
