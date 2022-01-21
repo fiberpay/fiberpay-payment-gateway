@@ -23,9 +23,8 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 	* Constructor for the gateway.
 	*/
 	public function __construct() {
-
 		$this->id = 'fiberpay_payments';
-		$this->icon = '';
+		$this->icon = $this->getIconFilePath();
 		$this->has_fields = false;
 		$this->method_title = __('Fiberpay', 'woocommerce');
 		$this->method_description = __('Fiberpay payment gateway', 'woocommerce');
@@ -49,6 +48,11 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 		// Customer Emails.
 		add_action('woocommerce_email_before_order_table', array( $this, 'email_instructions'), 10, 3);
+	}
+
+	private function getIconFilePath()
+	{
+		return dirname(plugin_dir_url(__FILE__)) . '/assets/logo-fiberpay.png';
 	}
 
 	/**
