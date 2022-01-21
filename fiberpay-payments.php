@@ -80,7 +80,6 @@ function fiberpay_init_gateway_class() {
 
 			// Actions.
 			add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
-			add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'save_account_details' ) );
 			add_action( 'woocommerce_thankyou_bacs', array( $this, 'thankyou_page' ) );
 
 			// Customer Emails.
@@ -96,7 +95,7 @@ function fiberpay_init_gateway_class() {
 				'enabled'         => array(
 					'title'   => __( 'Enable/Disable', 'woocommerce' ),
 					'type'    => 'checkbox',
-					'label'   => __( 'Enable bank transfer', 'woocommerce' ),
+					'label'   => __( 'Enable Fiberpay payments', 'woocommerce' ),
 					'default' => 'no',
 				),
 				'title'           => array(
@@ -120,137 +119,8 @@ function fiberpay_init_gateway_class() {
 					'default'     => '',
 					'desc_tip'    => true,
 				),
-				'account_details' => array(
-					'type' => 'account_details',
-				),
 			);
 
-		}
-
-		/**
-		 * Generate account details html.
-		 *
-		 * @return string
-		 */
-		public function generate_account_details_html() {
-
-			ob_start();
-
-			$country = WC()->countries->get_base_country();
-			$locale  = $this->get_country_locale();
-
-			// Get sortcode label in the $locale array and use appropriate one.
-			$sortcode = isset( $locale[ $country ]['sortcode']['label'] ) ? $locale[ $country ]['sortcode']['label'] : __( 'Sort code', 'woocommerce' );
-
-			?>
-<tr valign="top">
-  <th scope="row" class="titledesc"><?php esc_html_e( 'Account details:', 'woocommerce' ); ?></th>
-  <td class="forminp" id="bacs_accounts">
-    <div class="wc_input_table_wrapper">
-      <table class="widefat wc_input_table sortable" cellspacing="0">
-        <thead>
-          <tr>
-            <th class="sort">&nbsp;</th>
-            <th><?php esc_html_e( 'Account name', 'woocommerce' ); ?></th>
-            <th><?php esc_html_e( 'Account number', 'woocommerce' ); ?></th>
-            <th><?php esc_html_e( 'Bank name', 'woocommerce' ); ?></th>
-            <th><?php echo esc_html( $sortcode ); ?></th>
-            <th><?php esc_html_e( 'IBAN', 'woocommerce' ); ?></th>
-            <th><?php esc_html_e( 'BIC / Swift', 'woocommerce' ); ?></th>
-          </tr>
-        </thead>
-        <tbody class="accounts">
-          <?php
-								$i = -1;
-								if ( $this->account_details ) {
-									foreach ( $this->account_details as $account ) {
-										$i++;
-
-										echo '<tr class="account">
-											<td class="sort"></td>
-											<td><input type="text" value="' . esc_attr( wp_unslash( $account['account_name'] ) ) . '" name="bacs_account_name[' . esc_attr( $i ) . ']" /></td>
-											<td><input type="text" value="' . esc_attr( $account['account_number'] ) . '" name="bacs_account_number[' . esc_attr( $i ) . ']" /></td>
-											<td><input type="text" value="' . esc_attr( wp_unslash( $account['bank_name'] ) ) . '" name="bacs_bank_name[' . esc_attr( $i ) . ']" /></td>
-											<td><input type="text" value="' . esc_attr( $account['sort_code'] ) . '" name="bacs_sort_code[' . esc_attr( $i ) . ']" /></td>
-											<td><input type="text" value="' . esc_attr( $account['iban'] ) . '" name="bacs_iban[' . esc_attr( $i ) . ']" /></td>
-											<td><input type="text" value="' . esc_attr( $account['bic'] ) . '" name="bacs_bic[' . esc_attr( $i ) . ']" /></td>
-										</tr>';
-									}
-								}
-								?>
-        </tbody>
-        <tfoot>
-          <tr>
-            <th colspan="7"><a href="#" class="add button"><?php esc_html_e( '+ Add account', 'woocommerce' ); ?></a> <a
-                href="#"
-                class="remove_rows button"><?php esc_html_e( 'Remove selected account(s)', 'woocommerce' ); ?></a></th>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-    <script type="text/javascript">
-    jQuery(function() {
-      jQuery('#bacs_accounts').on('click', 'a.add', function() {
-
-        var size = jQuery('#bacs_accounts').find('tbody .account').length;
-
-        jQuery('<tr class="account">\
-										<td class="sort"></td>\
-										<td><input type="text" name="bacs_account_name[' + size + ']" /></td>\
-										<td><input type="text" name="bacs_account_number[' + size + ']" /></td>\
-										<td><input type="text" name="bacs_bank_name[' + size + ']" /></td>\
-										<td><input type="text" name="bacs_sort_code[' + size + ']" /></td>\
-										<td><input type="text" name="bacs_iban[' + size + ']" /></td>\
-										<td><input type="text" name="bacs_bic[' + size + ']" /></td>\
-									</tr>').appendTo('#bacs_accounts table tbody');
-
-        return false;
-      });
-    });
-    </script>
-  </td>
-</tr>
-<?php
-			return ob_get_clean();
-
-		}
-
-		/**
-		 * Save account details table.
-		 */
-		public function save_account_details() {
-
-			$accounts = array();
-
-			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verification already handled in WC_Admin_Settings::save()
-			if ( isset( $_POST['bacs_account_name'] ) && isset( $_POST['bacs_account_number'] ) && isset( $_POST['bacs_bank_name'] )
-				 && isset( $_POST['bacs_sort_code'] ) && isset( $_POST['bacs_iban'] ) && isset( $_POST['bacs_bic'] ) ) {
-
-				$account_names   = wc_clean( wp_unslash( $_POST['bacs_account_name'] ) );
-				$account_numbers = wc_clean( wp_unslash( $_POST['bacs_account_number'] ) );
-				$bank_names      = wc_clean( wp_unslash( $_POST['bacs_bank_name'] ) );
-				$sort_codes      = wc_clean( wp_unslash( $_POST['bacs_sort_code'] ) );
-				$ibans           = wc_clean( wp_unslash( $_POST['bacs_iban'] ) );
-				$bics            = wc_clean( wp_unslash( $_POST['bacs_bic'] ) );
-
-				foreach ( $account_names as $i => $name ) {
-					if ( ! isset( $account_names[ $i ] ) ) {
-						continue;
-					}
-
-					$accounts[] = array(
-						'account_name'   => $account_names[ $i ],
-						'account_number' => $account_numbers[ $i ],
-						'bank_name'      => $bank_names[ $i ],
-						'sort_code'      => $sort_codes[ $i ],
-						'iban'           => $ibans[ $i ],
-						'bic'            => $bics[ $i ],
-					);
-				}
-			}
-			// phpcs:enable
-
-			update_option( 'woocommerce_bacs_accounts', $accounts );
 		}
 
 		/**
@@ -263,7 +133,6 @@ function fiberpay_init_gateway_class() {
 			if ( $this->instructions ) {
 				echo wp_kses_post( wpautop( wptexturize( wp_kses_post( $this->instructions ) ) ) );
 			}
-			$this->bank_details( $order_id );
 
 		}
 
@@ -279,88 +148,6 @@ function fiberpay_init_gateway_class() {
 			if ( ! $sent_to_admin && 'bacs' === $order->get_payment_method() && $order->has_status( 'on-hold' ) ) {
 				if ( $this->instructions ) {
 					echo wp_kses_post( wpautop( wptexturize( $this->instructions ) ) . PHP_EOL );
-				}
-				$this->bank_details( $order->get_id() );
-			}
-
-		}
-
-		/**
-		 * Get bank details and place into a list format.
-		 *
-		 * @param int $order_id Order ID.
-		 */
-		private function bank_details( $order_id = '' ) {
-
-			if ( empty( $this->account_details ) ) {
-				return;
-			}
-
-			// Get order and store in $order.
-			$order = wc_get_order( $order_id );
-
-			// Get the order country and country $locale.
-			$country = $order->get_billing_country();
-			$locale  = $this->get_country_locale();
-
-			// Get sortcode label in the $locale array and use appropriate one.
-			$sortcode = isset( $locale[ $country ]['sortcode']['label'] ) ? $locale[ $country ]['sortcode']['label'] : __( 'Sort code', 'woocommerce' );
-
-			$bacs_accounts = apply_filters( 'woocommerce_bacs_accounts', $this->account_details, $order_id );
-
-			if ( ! empty( $bacs_accounts ) ) {
-				$account_html = '';
-				$has_details  = false;
-
-				foreach ( $bacs_accounts as $bacs_account ) {
-					$bacs_account = (object) $bacs_account;
-
-					if ( $bacs_account->account_name ) {
-						$account_html .= '<h3 class="wc-bacs-bank-details-account-name">' . wp_kses_post( wp_unslash( $bacs_account->account_name ) ) . ':</h3>' . PHP_EOL;
-					}
-
-					$account_html .= '<ul class="wc-bacs-bank-details order_details bacs_details">' . PHP_EOL;
-
-					// BACS account fields shown on the thanks page and in emails.
-					$account_fields = apply_filters(
-						'woocommerce_bacs_account_fields',
-						array(
-							'bank_name'      => array(
-								'label' => __( 'Bank', 'woocommerce' ),
-								'value' => $bacs_account->bank_name,
-							),
-							'account_number' => array(
-								'label' => __( 'Account number', 'woocommerce' ),
-								'value' => $bacs_account->account_number,
-							),
-							'sort_code'      => array(
-								'label' => $sortcode,
-								'value' => $bacs_account->sort_code,
-							),
-							'iban'           => array(
-								'label' => __( 'IBAN', 'woocommerce' ),
-								'value' => $bacs_account->iban,
-							),
-							'bic'            => array(
-								'label' => __( 'BIC', 'woocommerce' ),
-								'value' => $bacs_account->bic,
-							),
-						),
-						$order_id
-					);
-
-					foreach ( $account_fields as $field_key => $field ) {
-						if ( ! empty( $field['value'] ) ) {
-							$account_html .= '<li class="' . esc_attr( $field_key ) . '">' . wp_kses_post( $field['label'] ) . ': <strong>' . wp_kses_post( wptexturize( $field['value'] ) ) . '</strong></li>' . PHP_EOL;
-							$has_details   = true;
-						}
-					}
-
-					$account_html .= '</ul>';
-				}
-
-				if ( $has_details ) {
-					echo '<section class="woocommerce-bacs-bank-details"><h2 class="wc-bacs-bank-details-heading">' . esc_html__( 'Our bank details', 'woocommerce' ) . '</h2>' . wp_kses_post( PHP_EOL . $account_html ) . '</section>';
 				}
 			}
 
