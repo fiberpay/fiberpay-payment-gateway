@@ -12,6 +12,11 @@
 */
 class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
+	private const CURRENCY_PLN = 'PLN';
+
+	private static $valid_currencies = [
+		self::CURRENCY_PLN,
+	];
 	/**
 	* Array of locales
 	*
@@ -49,6 +54,21 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		// Customer Emails.
 		add_action('woocommerce_email_before_order_table', array( $this, 'email_instructions'), 10, 3);
 	}
+
+	/**
+	 * Check if the gateway is available for use.
+	 *
+	 * @return bool
+	 */
+	public function is_available() {
+		$currency  = get_woocommerce_currency();
+		if(!in_array($currency, $this->valid_currencies)) {
+			return false;
+		};
+
+		return parent::is_available();
+	}
+
 
 	private function getIconFilePath()
 	{
