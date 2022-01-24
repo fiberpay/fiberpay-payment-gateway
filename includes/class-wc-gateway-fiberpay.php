@@ -17,6 +17,9 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 	private static $valid_currencies = [
 		self::CURRENCY_PLN,
 	];
+
+	private $CALLBACK_URL = "fiberpay_payment_callback";
+
 	/**
 	* Array of locales
 	*
@@ -49,10 +52,33 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 		// Actions.
 		add_action('woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options'));
+
+		// add callback endpoint
+		add_action( 'woocommerce_api_'. $this->CALLBACK_URL, array( $this, 'handle_callback'));
+
 		add_action('woocommerce_thankyou_bacs', array( $this, 'thankyou_page'));
 
 		// Customer Emails.
 		add_action('woocommerce_email_before_order_table', array( $this, 'email_instructions'), 10, 3);
+	}
+
+	public function test()
+	{
+		wp_die( 'PayPal IPN Request Failure', 'PayPal IPN', array( 'response' => 500 ) );
+	}
+
+	public function handle_callback()
+	{
+		$b = $_SERVER;
+		$header = $b["HTTP_X_API_KEY"];
+		$headers = apache_request_headers();
+
+		$entityBody = file_get_contents('php://input');
+
+		$posted = wp_unslash( $_POST );
+		$a = 'a';
+		$c = WC()->api_request_url( $this->SUCCESS_CALLBACK_URL );
+		wp_die( $entityBody, 'PayPal IPN', array( 'response' => 500 ) );
 	}
 
 	/**
@@ -73,6 +99,12 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 	private function getIconFilePath()
 	{
 		return dirname(plugin_dir_url(__FILE__)) . '/assets/logo-fiberpay.png';
+	}
+
+	private function getCallbackUrl()
+	{
+		$url = WC()->api_request_url( $this->SUCCESS_CALLBACK_URL );
+		return $url;
 	}
 
 	/**
@@ -219,9 +251,15 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		return false;
 	}
 
+	private function getFiberpayClient()
+	{
+		$client = new \FiberPay\FiberPayClient($this->api_key, $this->secret_key, $this->is_test_env);
+		return $client;
+	}
+
 	private function checkConfig()
 	{
-		// $client = new \FiberPay\FiberPayClient($this->api_key, $this->secret_key, $this->is_test_env);
+		$client = $this->getFiberpayClient();
 		// $ret = json_decode($client->getCollectOrderInfo($this->collect_order_code));
 
 		// return isset($ret->data);
