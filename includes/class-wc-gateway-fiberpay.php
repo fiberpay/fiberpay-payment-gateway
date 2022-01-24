@@ -51,27 +51,40 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		$this->secret_key = $this->get_option('secret_key');
 
 		// Actions.
-		add_action('woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options'));
+		// add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
+
+		// add_action('woocommerce_order_status_cancelled', [$this, 'handle_order_cancelled']);
 
 		// add callback endpoint
-		add_action( 'woocommerce_api_'. $this->CALLBACK_URL, array( $this, 'handle_callback'));
+		add_action( 'woocommerce_api_'. $this->CALLBACK_URL, [$this, 'handle_callback']);
 
-		add_action('woocommerce_thankyou_bacs', array( $this, 'thankyou_page'));
+		add_action('woocommerce_thankyou_bacs', [$this, 'thankyou_page']);
 
 		// Customer Emails.
-		add_action('woocommerce_email_before_order_table', array( $this, 'email_instructions'), 10, 3);
-	}
-
-	public function test()
-	{
-		wp_die( 'PayPal IPN Request Failure', 'PayPal IPN', array( 'response' => 500 ) );
+		add_action('woocommerce_email_before_order_table', [$this, 'email_instructions'], 10, 3);
 	}
 
 	public function handle_callback()
 	{
-		$b = $_SERVER;
-		$header = $b["HTTP_X_API_KEY"];
+		if(!$this->isApiKeyHeaderValid()) {
+			wp_die('Api key is not valid', '', ['response' => 400]);
+		};
+
+		$entityBody = file_get_contents('php://input');
+
+	}
+
+	private function isApiKeyHeaderValid()
+	{
 		$headers = apache_request_headers();
+		if($headers) {
+			$apiKeyHeader = $headers['Api-Key'];
+		} else {
+			$apiKeyHeader = $_SERVER['HTTP_API_KEY'];
+		};
+
+		return $apiKeyHeader === $this->api_key;
+	}
 
 		$entityBody = file_get_contents('php://input');
 
