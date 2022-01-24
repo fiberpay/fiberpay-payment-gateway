@@ -200,29 +200,52 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 	}
 
-// $order_statuses = array(
-// 'wc-pending' => _x( 'Pending payment', 'Order status', 'woocommerce' ),
-// 'wc-processing' => _x( 'Processing', 'Order status', 'woocommerce' ),
-// 'wc-on-hold' => _x( 'On hold', 'Order status', 'woocommerce' ),
-// 'wc-completed' => _x( 'Completed', 'Order status', 'woocommerce' ),
-// 'wc-cancelled' => _x( 'Cancelled', 'Order status', 'woocommerce' ),
-// 'wc-refunded' => _x( 'Refunded', 'Order status', 'woocommerce' ),
-// 'wc-failed' => _x( 'Failed', 'Order status', 'woocommerce' ),
-// );
-
 	/**
 	* Process the payment and return the result.
 	*
 	* @param int $order_id Order ID.
 	* @return array
 	*/
-	public function process_payment( $order_id ) {
+	public function process_payment($order_id) {
 
-		$order = wc_get_order( $order_id);
+		$order = wc_get_order($order_id);
 
-		if ( $order->get_total() > 0 ) {
-			// Mark as on-hold (we're awaiting the payment).
-			$order->update_status( apply_filters('woocommerce_bacs_process_payment_order_status', 'on-hold', $order ), __('Awaiting BACS payment', 'woocommerce'));
+		$totalAmount = $order->get_total();
+
+		if ( $totalAmount > 0 ) {
+			$client = $this->getFiberpayClient();
+
+			// $order->update_status( apply_filters('woocommerce_bacs_process_payment_order_status', 'on-hold', $order ), __('Awaiting BACS payment', 'woocommerce'));
+
+			$description = 'Płatność [OPIS PŁATNOŚCI]';
+			// get_woocommerce_currency()
+			$currency = $order->get_data()['currency'];
+			$buyerFirstName = $order->get_billing_first_name();
+			$buyerLastName = $order->get_billing_last_name();
+			$buyerEmail = $order->get_billing_email();
+
+			$callbackUrl = $this->getCallbackUrl();
+			$callbackParams = json_encode([
+				'wc_order_id' => $order_id,
+			]);
+
+			$res = $client->addCollectItem(
+				$this->collect_order_code,
+				$description,
+				$totalAmount,
+				$currency,
+				$callbackUrl,
+				$callbackParams,
+				null,
+				null,
+			);
+
+			$order->update_meta_data( '_fiberpay_create_item_response', $res );
+			$res = json_decode($res);
+			$order->update_meta_data( '_fiberpay_order_item_code', $res->data->code );
+			$order->save();
+			// $order->update_status('failed');
+
 		} else {
 			$order->payment_complete();
 		}
@@ -230,11 +253,17 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		// Remove cart.
 		WC()->cart->empty_cart();
 
+		// handle exception
+		$status = $res->status;
+
 		// Return thankyou redirect.
-		return [
+
+		$ret = [
 			'result' => 'success',
 			'redirect' => $this->get_return_url( $order ),
 		];
+
+		return $ret;
 
 	}
 
