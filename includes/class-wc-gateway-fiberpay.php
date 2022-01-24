@@ -86,12 +86,18 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		return $apiKeyHeader === $this->api_key;
 	}
 
-		$entityBody = file_get_contents('php://input');
+	public function handle_order_cancelled($order_id)
+	{
+		$order = wc_get_order($order_id);
+		if ($order->get_payment_method() === $this->id ) {
+			// $captured = $order->get_meta( '_stripe_charge_captured', true );
+			// if ( 'no' === $captured ) {
+				// $this->process_refund( $order_id );
+			// }
 
-		$posted = wp_unslash( $_POST );
-		$a = 'a';
-		$c = WC()->api_request_url( $this->SUCCESS_CALLBACK_URL );
-		wp_die( $entityBody, 'PayPal IPN', array( 'response' => 500 ) );
+			// This hook fires when admin manually changes order status to cancel.
+			// do_action( 'woocommerce_stripe_process_manual_cancel', $order );
+		}
 	}
 
 	/**
