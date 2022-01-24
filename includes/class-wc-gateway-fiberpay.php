@@ -62,7 +62,7 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 	 */
 	public function is_available() {
 		$currency  = get_woocommerce_currency();
-		if(!in_array($currency, $this->valid_currencies)) {
+		if(!in_array($currency, self::$valid_currencies)) {
 			return false;
 		};
 
