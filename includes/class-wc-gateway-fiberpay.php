@@ -266,38 +266,40 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		$totalAmount = $order->get_total();
 
 		if ( $totalAmount > 0 ) {
-			$client = $this->getFiberpayClient();
+			$orderItem = $order->get_meta('_fiberpay_create_item_response');
+			if(isset($orderItem)) {
+				$redirect = json_decode($orderItem)->data->redirect;
+			} else {
+				$client = $this->getFiberpayClient();
 
-			// $order->update_status( apply_filters('woocommerce_bacs_process_payment_order_status', 'on-hold', $order ), __('Awaiting BACS payment', 'woocommerce'));
+				$description = 'Płatność [OPIS PŁATNOŚCI]';
+				$currency = $order->get_data()['currency'];
+				$buyerFirstName = $order->get_billing_first_name();
+				$buyerLastName = $order->get_billing_last_name();
+				$buyerEmail = $order->get_billing_email();
 
-			$description = 'Płatność [OPIS PŁATNOŚCI]';
-			// get_woocommerce_currency()
-			$currency = $order->get_data()['currency'];
-			$buyerFirstName = $order->get_billing_first_name();
-			$buyerLastName = $order->get_billing_last_name();
-			$buyerEmail = $order->get_billing_email();
+				$callbackUrl = $this->getCallbackUrl();
+				$callbackParams = json_encode([
+					'wc_order_id' => $order_id,
+				]);
 
-			$callbackUrl = $this->getCallbackUrl();
-			$callbackParams = json_encode([
-				'wc_order_id' => $order_id,
-			]);
+				$res = $client->addCollectItem(
+					$this->collect_order_code,
+					$description,
+					$totalAmount,
+					$currency,
+					$callbackUrl,
+					$callbackParams,
+					null,
+					null,
+				);
 
-			$res = $client->addCollectItem(
-				$this->collect_order_code,
-				$description,
-				$totalAmount,
-				$currency,
-				$callbackUrl,
-				$callbackParams,
-				null,
-				null,
-			);
-
-			$order->update_meta_data( '_fiberpay_create_item_response', $res );
-			$res = json_decode($res);
-			$order->update_meta_data( '_fiberpay_order_item_code', $res->data->code );
-			$order->save();
-			$redirect = $res->data->redirect;
+				$order->update_meta_data( '_fiberpay_create_item_response', $res );
+				$res = json_decode($res);
+				$order->update_meta_data( '_fiberpay_order_item_code', $res->data->code );
+				$order->save();
+				$redirect = $res->data->redirect;
+			}
 			// $order->update_status('failed');
 
 		} else {
