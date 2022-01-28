@@ -16,6 +16,8 @@ if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
 	return;
 }
 
+require __DIR__ . '/vendor/autoload.php';
+
 function fiberpay_add_gateway_class($gateways) {
 	$gateways[] = 'Fiberpay_WC_Payment_Gateway';
 	return $gateways;
