@@ -79,8 +79,9 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 		$order = $this->getWcOrder($data->payload);
 
-		wp_die('OK', '', ['response' => 200]);
+		$order->payment_complete();
 
+		wp_die('OK', '', ['response' => 200]);
 	}
 
 	private function decodeJWT($jwt)
@@ -98,7 +99,7 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 	public function getWcOrder($payload)
 	{
 		$orderId = $payload->customParams->wc_order_id;
-		$order = wc_get_order('$orderId');
+		$order = wc_get_order($orderId);
 
 		if(!$order) {
 			wp_die("Order with id $orderId not found", '', ['response' => 400]);
