@@ -296,6 +296,7 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 			$res = json_decode($res);
 			$order->update_meta_data( '_fiberpay_order_item_code', $res->data->code );
 			$order->save();
+			$redirect = $res->data->redirect;
 			// $order->update_status('failed');
 
 		} else {
@@ -312,7 +313,8 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 		$ret = [
 			'result' => 'success',
-			'redirect' => $this->get_return_url( $order ),
+			// 'redirect' => $this->get_return_url( $order ),
+			'redirect' => $redirect,
 		];
 
 		return $ret;
