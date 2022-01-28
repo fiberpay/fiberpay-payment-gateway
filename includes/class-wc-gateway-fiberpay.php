@@ -1,5 +1,9 @@
 <?php
 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Firebase\JWT\SignatureInvalidException;
+
 /**
 * Fiberpay_WC_Payment_Gateway.
 *
@@ -70,8 +74,37 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 			wp_die('Api key is not valid', '', ['response' => 400]);
 		};
 
-		$entityBody = file_get_contents('php://input');
+		$jwt = file_get_contents('php://input');
+		$data = $this->decodeJWT($jwt);
 
+		$order = $this->getWcOrder($data->payload);
+
+		wp_die('OK', '', ['response' => 200]);
+
+	}
+
+	private function decodeJWT($jwt)
+	{
+		$jwtKey = new Key($this->secret_key, 'HS256');
+		try {
+			$decoded = JWT::decode($jwt, $jwtKey);
+		} catch (SignatureInvalidException $e) {
+			wp_die('JWT signature is not valid', '', ['response' => 400]);
+		}
+
+		return $decoded;
+	}
+
+	public function getWcOrder($payload)
+	{
+		$orderId = $payload->customParams->wc_order_id;
+		$order = wc_get_order('$orderId');
+
+		if(!$order) {
+			wp_die("Order with id $orderId not found", '', ['response' => 400]);
+		}
+
+		return $order;
 	}
 
 	private function isApiKeyHeaderValid()
