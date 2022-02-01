@@ -31,6 +31,10 @@ add_action('plugins_loaded', 'fiberpay_init_gateway_class', 11);
 function fiberpay_init_gateway_class() {
 	load_plugin_textdomain( 'fiberpay-payments', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
 
+	if ( is_admin() ) {
+		require_once dirname( __FILE__ ) . '/includes/class-wc-fiberpay-admin-notices.php';
+	}
+
 	if(class_exists('WC_Payment_Gateway')) {
 		static $plugin;
 
