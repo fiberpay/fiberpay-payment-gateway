@@ -32,7 +32,13 @@ function fiberpay_init_gateway_class() {
 	load_plugin_textdomain( 'fiberpay-payments', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
 
 	if(class_exists('WC_Payment_Gateway')) {
-		require_once plugin_dir_path(__FILE__) . '/vendor/fiberpay/fiberpay-php/lib/FiberPayClient.php';
-		require_once plugin_dir_path(__FILE__) . '/includes/class-wc-gateway-fiberpay.php';
+		static $plugin;
+
+		if ( ! isset( $plugin ) ) {
+			include_once plugin_dir_path(__FILE__) . '/vendor/fiberpay/fiberpay-php/lib/FiberPayClient.php';
+			include_once plugin_dir_path(__FILE__) . '/includes/class-wc-gateway-fiberpay.php';
+		}
+
+		return $plugin;
 	}
 }

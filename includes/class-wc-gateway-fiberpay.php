@@ -22,14 +22,47 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		self::CURRENCY_PLN,
 	];
 
-	private $CALLBACK_URL = "fiberpay_payment_callback";
-
 	/**
 	* Array of locales
 	*
 	* @var array
 	*/
 	public $locale;
+
+	/**
+	 * The *Singleton* instance of this class
+	 *
+	 * @var Singleton
+	 */
+	private static $instance;
+
+	/**
+	 * Returns the *Singleton* instance of this class.
+	 *
+	 * @return Singleton The *Singleton* instance.
+	 */
+	public static function get_instance() {
+		if ( null === self::$instance ) {
+			self::$instance = new self();
+		}
+		return self::$instance;
+	}
+
+	/**
+	 * Private clone method to prevent cloning of the instance of the
+	 * *Singleton* instance.
+	 *
+	 * @return void
+	 */
+	public function __clone() {}
+
+	/**
+	 * Private unserialize method to prevent unserializing of the *Singleton*
+	 * instance.
+	 *
+	 * @return void
+	 */
+	public function __wakeup() {}
 
 	/**
 	* Constructor for the gateway.
