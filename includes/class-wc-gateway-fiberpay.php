@@ -16,6 +16,11 @@ use Firebase\JWT\SignatureInvalidException;
 */
 class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
+	private $CALLBACK_URL = "fiberpay_payment_callback";
+
+	const PROD_COLLECT_ORDER_OPTION    = 'wc_fiberpay_order_data_prod';
+	const TEST_COLLECT_ORDER_OPTION    = 'wc_fiberpay_order_data_test';
+
 	private const CURRENCY_PLN = 'PLN';
 
 	private static $valid_currencies = [
