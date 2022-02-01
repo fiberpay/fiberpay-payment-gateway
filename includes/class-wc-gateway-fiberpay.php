@@ -35,15 +35,15 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 	* Constructor for the gateway.
 	*/
 	public function __construct() {
+		// Load the settings.
+		$this->init_form_fields();
+		// $this->init_settings();
+
 		$this->id = 'fiberpay_payments';
 		$this->icon = $this->getIconFilePath();
 		$this->has_fields = false;
-		$this->method_title = __('Fiberpay', 'woocommerce');
-		$this->method_description = __('Fiberpay payment gateway', 'woocommerce');
-
-		// Load the settings.
-		$this->init_form_fields();
-		$this->init_settings();
+		$this->method_title = __('Fiberpay', 'fiberpay-payments');
+		$this->method_description = __('Fiberpay payment gateway', 'fiberpay-payments');
 
 		// Define user set variables.
 		$this->title = $this->get_option('title');
@@ -55,17 +55,19 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		$this->secret_key = $this->get_option('secret_key');
 
 		// Actions.
-		// add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
+
 
 		// add_action('woocommerce_order_status_cancelled', [$this, 'handle_order_cancelled']);
 
 		// add callback endpoint
 		add_action( 'woocommerce_api_'. $this->CALLBACK_URL, [$this, 'handle_callback']);
 
-		add_action('woocommerce_thankyou_bacs', [$this, 'thankyou_page']);
+		// add_action('woocommerce_thankyou_bacs', [$this, 'thankyou_page']);
 
 		// Customer Emails.
-		add_action('woocommerce_email_before_order_table', [$this, 'email_instructions'], 10, 3);
+		// add_action('woocommerce_email_before_order_table', [$this, 'email_instructions'], 10, 3);
+
+		add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
 	}
 
 	public function handle_callback()
@@ -167,55 +169,55 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 		$this->form_fields = [
 			'enabled' => [
-				'title' => __('Enable/Disable', 'woocommerce'),
+				'title' => __('Enable/Disable', 'fiberpay-payments'),
 				'type' => 'checkbox',
-				'label' => __('Enable Fiberpay payments', 'woocommerce'),
+				'label' => __('Enable Fiberpay payments', 'fiberpay-payments'),
 				'default' => 'no',
 			],
 			'title' => [
-				'title' => __('Title', 'woocommerce'),
+				'title' => __('Title', 'fiberpay-payments'),
 				'type' => 'text',
-				'description' => __('This controls the title which the user sees during checkout.', 'woocommerce'),
-				'default' => __('Fiberpay quick money transfer', 'woocommerce'),
+				'description' => __('This controls the title which the user sees during checkout.', 'fiberpay-payments'),
+				'default' => __('Fiberpay quick money transfer', 'fiberpay-payments'),
 				'desc_tip' => true,
 			],
 			'description' => [
-				'title' => __('Description', 'woocommerce'),
+				'title' => __('Description', 'fiberpay-payments'),
 				'type' => 'textarea',
-				'description' => __('Payment method description that the customer will see on your checkout.', 'woocommerce'),
-				'default' => __('Make your payment directly into our bank account. Please use your Order ID as the payment reference.Your order will not be shipped until the funds have cleared in our account.', 'woocommerce'),
+				'description' => __('Payment method description that the customer will see on your checkout.', 'fiberpay-payments'),
+				'default' => __('Make your payment directly into our bank account. Please use your Order ID as the payment reference.Your order will not be shipped until the funds have cleared in our account.', 'fiberpay-payments'),
 				'desc_tip' => true,
 			],
 			'is_test_env' => [
-				'title' => __('Test Environment', 'woocommerce'),
+				'title' => __('Test Environment', 'fiberpay-payments'),
 				'type' => 'checkbox',
-				'label' => __('Test Environment', 'woocommerce'),
-				'description' => __('Check for test environment usage', 'woocommerce'),
+				'label' => __('Test Environment', 'fiberpay-payments'),
+				'description' => __('Check for test environment usage', 'fiberpay-payments'),
 				'default' => 'no',
 				'desc_tip' => true,
 			],
 			'api_key' => [
-				'title' => __('Api Key', 'woocommerce'),
+				'title' => __('Api Key', 'fiberpay-payments'),
 				'type' => 'text',
-				'description' => __('Your Fiberpay Api Key', 'woocommerce'),
+				'description' => __('Your Fiberpay Api Key', 'fiberpay-payments'),
 				'desc_tip' => true,
 			],
 			'secret_key' => [
-				'title' => __('Secret Key', 'woocommerce'),
+				'title' => __('Secret Key', 'fiberpay-payments'),
 				'type' => 'text',
-				'description' => __('Your Fiberpay Secret Key', 'woocommerce'),
+				'description' => __('Your Fiberpay Secret Key', 'fiberpay-payments'),
 				'desc_tip' => true,
 			],
 			'collect_order_code' => [
-				'title' => __('Collect order code', 'woocommerce'),
+				'title' => __('Collect order code', 'fiberpay-payments'),
 				'type' => 'text',
-				'description' => __('Your Fiberpay Collect Order Code', 'woocommerce'),
+				'description' => __('Your Fiberpay Collect Order Code', 'fiberpay-payments'),
 				'desc_tip' => true,
 			],
 			'instructions' => [
-				'title' => __('Instructions', 'woocommerce'),
+				'title' => __('Instructions', 'fiberpay-payments'),
 				'type' => 'textarea',
-				'description' => __('Instructions that will be added to the thank you page and emails.', 'woocommerce'),
+				'description' => __('Instructions that will be added to the thank you page and emails.', 'fiberpay-payments'),
 				'default' => '',
 				'desc_tip' => true,
 			],

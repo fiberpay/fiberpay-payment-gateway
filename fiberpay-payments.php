@@ -5,6 +5,8 @@
  * Description: Take instant payments on your store.
  * Author: Fiberpay
  * Author URI: https://fiberpay.pl
+ * Text Domain: fiberpay-payments
+ * Domain Path: /languages
  * Version: 0.1.0
  */
 
@@ -27,6 +29,8 @@ add_filter('woocommerce_payment_gateways', 'fiberpay_add_gateway_class');
 add_action('plugins_loaded', 'fiberpay_init_gateway_class', 11);
 
 function fiberpay_init_gateway_class() {
+	load_plugin_textdomain( 'fiberpay-payments', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
+
 	if(class_exists('WC_Payment_Gateway')) {
 		require_once plugin_dir_path(__FILE__) . '/vendor/fiberpay/fiberpay-php/lib/FiberPayClient.php';
 		require_once plugin_dir_path(__FILE__) . '/includes/class-wc-gateway-fiberpay.php';
