@@ -103,6 +103,71 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
 	}
 
+	public function get_cached_collect_order() {
+		if ( ! $this->is_connected() ) {
+			return [];
+		}
+
+		$order = $this->read_collect_order_from_cache();
+
+		if ( ! empty( $order ) ) {
+			return $order;
+		}
+
+		return $this->cache_collect_order();
+	}
+
+	private function is_connected() {
+
+		$options = get_option( 'woocommerce_fiberpay_payments_settings', [] );
+
+			return isset( $options['api_key'], $options['secret_key'] ) && trim( $options['api_key'] ) && trim( $options['secret_key'] );
+	}
+
+	/**
+	 * Caches account data for a period of time.
+	 */
+	private function cache_collect_order() {
+		$expiration = 2 * HOUR_IN_SECONDS;
+
+		// need call_user_func() as (  $this->stripe_api )::retrieve this syntax is not supported in php < 5.2
+		$client = $this->getFiberpayClient();
+		$order = json_decode($client->getCollectOrderInfo($this->collect_order_code));
+
+
+		if (( $order->error ) ) {
+			return [];
+		}
+
+		// Create or update the account option cache.
+		set_transient( $this->get_transient_key(), $order, $expiration );
+
+		return json_decode( wp_json_encode( $order ), true );
+	}
+
+	/**
+	 * Checks Fiberpay connection mode if it is test mode or prod mode
+	 *
+	 * @return string Transient key of test mode when testmode is enabled, otherwise returns the key of prod mode.
+	 */
+	private function get_transient_key() {
+		$settings_options = get_option( 'woocommerce_fiberpay_payments_settings', [] );
+		$key              = isset( $settings_options['is_test_env'] ) && 'yes' === $settings_options['is_test_env'] ? self::TEST_COLLECT_ORDER_OPTION : self::PROD_COLLECT_ORDER_OPTION;
+
+		return $key;
+	}
+
+		/**
+	 * Read the account from the WP option we cache it in.
+	 *
+	 * @return array empty when no data found in transient, otherwise returns cached data
+	 */
+	private function read_collect_order_from_cache() {
+		$account_cache = json_decode( wp_json_encode( get_transient( $this->get_transient_key() ) ), true );
+
+		return false === $account_cache ? [] : $account_cache;
+	}
+
 	public function handle_callback()
 	{
 		if(!$this->isApiKeyHeaderValid()) {
