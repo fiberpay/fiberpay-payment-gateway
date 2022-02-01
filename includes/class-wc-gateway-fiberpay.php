@@ -359,6 +359,34 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 	}
 
+	public function process_admin_options() {
+		// Load all old values before the new settings get saved.
+		$old_api_key      = $this->get_option( 'api_key' );
+		$old_secret_key   = $this->get_option( 'secret_key' );
+		$old_is_test_env   = $this->get_option( 'is_test_env' );
+
+		parent::process_admin_options();
+
+		// Load all old values after the new settings have been saved.
+		$new_api_key      = $this->get_option( 'api_key' );
+		$new_secret_key           = $this->get_option( 'secret_key' );
+		$new_is_test_env           = $this->get_option( 'is_test_env' );
+
+		// Checks whether a value has transitioned from a non-empty value to a new one.
+		$has_changed = function( $old_value, $new_value ) {
+			return ! empty( $old_value ) && ( $old_value !== $new_value );
+		};
+
+		// Look for updates.
+		if (
+			$has_changed( $old_api_key, $new_api_key )
+			|| $has_changed( $old_secret_key, $new_secret_key )
+			|| $has_changed( $old_is_test_env, $new_is_test_env )
+		) {
+			update_option( 'wc_fiberpay_payments_show_changed_keys_notice', 'yes' );
+		}
+	}
+
 	/**
 	* Return whether or not this gateway still requires setup to function.
 	*
