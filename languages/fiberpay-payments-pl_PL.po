@@ -5,31 +5,30 @@ msgstr ""
 "Project-Id-Version: Fiberpay Payment Plugin 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/fiberpay-"
 "payments\n"
-"Last-Translator: \n"
-"Language-Team: Polski\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2022-02-01T17:41:30+01:00\n"
-"PO-Revision-Date: 2022-02-01 18:28+0000\n"
-"X-Generator: Loco https://localise.biz/\n"
+"PO-Revision-Date: 2022-02-02 19:29+0100\n"
+"X-Generator: Poedit 3.0\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 "
+"|| n%100>14) ? 1 : 2);\n"
 "Language: pl_PL\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 "
-"&&(n%100<10||n%100 >= 20)? 1 : 2);\n"
-"X-Loco-Version: 2.5.8; wp-5.9"
 
 #. Plugin Name of the plugin
 msgid "Fiberpay Payment Plugin"
-msgstr "Wtyczka płatności Fiberpay"
+msgstr "Wtyczka Płatności Fiberpay"
 
 #. Plugin URI of the plugin
 #. Author URI of the plugin
 msgid "https://fiberpay.pl"
-msgstr ""
+msgstr "https://fiberpay.pl"
 
 #. Description of the plugin
 msgid "Take instant payments on your store."
-msgstr "Przyjmuj szybkie płatności w swoim sklepie"
+msgstr "Przyjmuj natychmiastowe płatności w swoim sklepie."
 
 #. Author of the plugin
 #: includes/class-wc-gateway-fiberpay.php:41
@@ -48,7 +47,7 @@ msgstr "Środowisko testowe"
 
 #: includes/class-wc-gateway-fiberpay.php:171
 msgid "Enable/Disable"
-msgstr "Włącz/Wyłącz"
+msgstr "Włącz / Wyłącz"
 
 #: includes/class-wc-gateway-fiberpay.php:173
 msgid "Enable Fiberpay payments"
@@ -60,8 +59,7 @@ msgstr "Tytuł"
 
 #: includes/class-wc-gateway-fiberpay.php:179
 msgid "This controls the title which the user sees during checkout."
-msgstr ""
-"Tytuł, który jest widoczny dla użytkownika podczas podsumowania płatności"
+msgstr "To tytuł, który użytkownik widzi podczas płatności."
 
 #: includes/class-wc-gateway-fiberpay.php:180
 msgid "Fiberpay quick money transfer"
@@ -73,19 +71,21 @@ msgstr "Opis"
 
 #: includes/class-wc-gateway-fiberpay.php:186
 msgid "Payment method description that the customer will see on your checkout."
-msgstr ""
-"Opis metody płatności widoczny dla klienta podczas podsumowania zamówienia"
+msgstr "Opis metody płatności widoczny dla użytkownika."
 
 #: includes/class-wc-gateway-fiberpay.php:187
 msgid ""
 "Make your payment directly into our bank account. Please use your Order ID "
 "as the payment reference.Your order will not be shipped until the funds have "
 "cleared in our account."
-msgstr "Make your payment directly i"
+msgstr ""
+"Make your payment directly into our bank account. Please use your Order ID "
+"as the payment reference.Your order will not be shipped until the funds have "
+"cleared in our account."
 
 #: includes/class-wc-gateway-fiberpay.php:194
 msgid "Check for test environment usage"
-msgstr "Zaznacz aby korzystać ze środowiska testowego Fiberpay"
+msgstr "Zaznacz aby korzystać ze środowiska testowego"
 
 #: includes/class-wc-gateway-fiberpay.php:199
 msgid "Api Key"
@@ -93,7 +93,7 @@ msgstr "Klucz API"
 
 #: includes/class-wc-gateway-fiberpay.php:201
 msgid "Your Fiberpay Api Key"
-msgstr "Twó klucz API Fiberpay"
+msgstr "Twój klucz API Fiberpay"
 
 #: includes/class-wc-gateway-fiberpay.php:205
 msgid "Secret Key"
@@ -105,11 +105,11 @@ msgstr "Twój klucz tajny Fiberpay"
 
 #: includes/class-wc-gateway-fiberpay.php:211
 msgid "Collect order code"
-msgstr "Kod zlecenia Collect Fiberpay"
+msgstr "Kod zlecenia Collect"
 
 #: includes/class-wc-gateway-fiberpay.php:213
 msgid "Your Fiberpay Collect Order Code"
-msgstr "Twój kod zlecenia Collect Fiberpay"
+msgstr "Twój kod zlecenia Collect w Fiberpay"
 
 #: includes/class-wc-gateway-fiberpay.php:217
 msgid "Instructions"
@@ -117,4 +117,4 @@ msgstr "Instrukcje"
 
 #: includes/class-wc-gateway-fiberpay.php:219
 msgid "Instructions that will be added to the thank you page and emails."
-msgstr "WYMAGA TŁUMACZENIA"
+msgstr "Instructions that will be added to the thank you page and emails."
