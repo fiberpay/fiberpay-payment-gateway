@@ -32,6 +32,13 @@ add_filter('woocommerce_payment_gateways', 'fiberpay_add_gateway_class');
 
 add_action('plugins_loaded', 'fiberpay_init_gateway_class', 11);
 
+register_deactivation_hook( __FILE__, 'delete_order_data_transients' );
+
+function delete_order_data_transients() {
+    delete_transient( 'wc_fiberpay_order_data_prod' );
+    delete_transient( 'wc_fiberpay_order_data_test' );
+}
+
 function fiberpay_init_gateway_class() {
 	load_plugin_textdomain( 'fiberpay-payments', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
 

@@ -51,7 +51,6 @@ class WC_Fiberpay_Admin_Notices {
 			return;
 		}
 
-		// Main Stripe payment method.
 		$this->check_environment();
 
 		foreach ( (array) $this->notices as $notice_key => $notice ) {

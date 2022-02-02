@@ -13,9 +13,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
  * wp-config.php. This is to prevent data loss when deleting the plugin from the backend
  * and to ensure only the site owner can perform this action.
  */
-// if ( defined( 'WC_REMOVE_ALL_DATA' ) && true === WC_REMOVE_ALL_DATA ) {
+if ( defined( 'WC_REMOVE_ALL_DATA' ) && true === WC_REMOVE_ALL_DATA ) {
 	// Delete options.
-	delete_option( 'woocommerce_stripe_settings' );
 	delete_option( 'wc_fiberpay_show_keys_notice' );
+	delete_option( 'wc_fiberpay_payments_show_changed_keys_notice' );
 	delete_option( 'woocommerce_fiberpay_payments_settings' );
-// }
+}
