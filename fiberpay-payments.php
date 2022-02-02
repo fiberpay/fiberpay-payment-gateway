@@ -18,7 +18,11 @@ if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
 	return;
 }
 
-require __DIR__ . '/vendor/autoload.php';
+$loader = require_once dirname( __FILE__ ) . '/vendor/autoload.php';
+
+if ( ! $loader ) {
+	throw new Exception( 'vendor/autoload.php missing please run `composer install`' );
+}
 
 function fiberpay_add_gateway_class($gateways) {
 	$gateways[] = 'Fiberpay_WC_Payment_Gateway';
@@ -39,7 +43,6 @@ function fiberpay_init_gateway_class() {
 		static $plugin;
 
 		if ( ! isset( $plugin ) ) {
-			include_once plugin_dir_path(__FILE__) . '/vendor/fiberpay/fiberpay-php/lib/FiberPayClient.php';
 			include_once plugin_dir_path(__FILE__) . '/includes/class-wc-gateway-fiberpay.php';
 		}
 
