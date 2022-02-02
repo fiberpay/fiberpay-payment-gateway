@@ -1,0 +1,14 @@
+{
+  "name": "fiberpay/fiberpay-php",
+  "type": "library",
+  "homepage": "https://fiberpay.pl/",
+  "license": "MIT",
+  "require": {
+    "php": ">=7.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "FiberPay\\": "lib/"
+    }
+  }
+}
