@@ -59,7 +59,7 @@ class WC_Fiberpay_Admin_Notices {
 
 			if ( $notice['dismissible'] ) {
 				?>
-<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'wc-stripe-hide-notice', $notice_key ), 'wc_stripe_hide_notices_nonce', '_wc_stripe_notice_nonce' ) ); ?>"
+<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'wc-fiberpay-hide-notice', $notice_key ), 'wc_fiberpay_hide_notices_nonce', '_wc_fiberpay_notice_nonce' ) ); ?>"
   class="woocommerce-message-close notice-dismiss"
   style="position:relative;float:right;padding:9px 0px 9px 9px 9px;text-decoration:none;"></a>
 <?php
@@ -151,8 +151,8 @@ class WC_Fiberpay_Admin_Notices {
 	 * @version 4.0.0
 	 */
 	public function hide_notices() {
-		if ( isset( $_GET['wc-stripe-hide-notice'] ) && isset( $_GET['_wc_stripe_notice_nonce'] ) ) {
-			if ( ! wp_verify_nonce( wc_clean( wp_unslash( $_GET['_wc_stripe_notice_nonce'] ) ), 'wc_stripe_hide_notices_nonce' ) ) {
+		if ( isset( $_GET['wc-fiberpay-hide-notice'] ) && isset( $_GET['_wc_fiberpay_notice_nonce'] ) ) {
+			if ( ! wp_verify_nonce( wc_clean( wp_unslash( $_GET['_wc_fiberpay_notice_nonce'] ) ), 'wc_fiberpay_hide_notices_nonce' ) ) {
 				wp_die( __( 'Action failed. Please refresh the page and retry.', 'woocommerce-gateway-stripe' ) );
 			}
 
@@ -160,22 +160,19 @@ class WC_Fiberpay_Admin_Notices {
 				wp_die( __( 'Cheatin&#8217; huh?', 'woocommerce-gateway-stripe' ) );
 			}
 
-			$notice = wc_clean( wp_unslash( $_GET['wc-stripe-hide-notice'] ) );
+			$notice = wc_clean( wp_unslash( $_GET['wc-fiberpay-hide-notice'] ) );
 
 			switch ( $notice ) {
 				case 'curl':
-					update_option( 'wc_stripe_show_curl_notice', 'no' );
+					update_option( 'wc_fiberpay_show_curl_notice', 'no' );
 					break;
 				case 'keys':
-					update_option( 'wc_stripe_show_keys_notice', 'no' );
+					update_option( 'wc_fiberpay_show_keys_notice', 'no' );
 					break;
 				case 'changed_keys':
 					update_option( 'wc_fiberpay_show_changed_keys_notice', 'no' );
 					break;
 				default:
-					if ( false !== strpos( $notice, '_upe' ) ) {
-						update_option( 'wc_fiberpay_show_' . $notice . '_notice', 'no' );
-					}
 					break;
 			}
 		}
