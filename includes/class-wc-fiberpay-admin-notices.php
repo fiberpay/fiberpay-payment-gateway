@@ -88,9 +88,6 @@ class WC_Fiberpay_Admin_Notices {
 	public function check_environment() {
 		$changed_keys_notice = get_option( 'wc_fiberpay_payments_show_changed_keys_notice' );
 		$options = get_option( 'woocommerce_fiberpay_payments_settings' );
-		$is_test_env = (isset( $options['is_test_env'] ) && 'yes' === $options['is_test_env'] ) ? true : false;
-        $api_key = isset( $options['api_key'] ) ? $options['api_key'] : '';
-        $secret_key = isset( $options['secret_key'] ) ? $options['secret_key'] : '';
         $collect_order_code = isset( $options['collect_order_code'] ) ? $options['collect_order_code'] : '';
 
 		if ( isset( $options['enabled'] ) && 'yes' === $options['enabled'] ) {
@@ -102,9 +99,7 @@ class WC_Fiberpay_Admin_Notices {
 
             $order_data = Fiberpay_WC_Payment_Gateway::get_instance()->get_cached_collect_order();
             if ($changed_keys_notice && (empty( $order_data ) || $collect_order_code !== $order_data['data']['code'])) {
-            	$setting_link = $this->get_setting_link();
-                /* translators: 1) link */
-                $this->add_admin_notice( 'keys', 'notice notice-error', sprintf( __( 'Your customers cannot use Stripe on checkout, because we couldn\'t connect to your account. Please go to your settings and, <a href="%s">set your Stripe account keys</a>.', 'woocommerce-gateway-stripe' ), $setting_link ), true );
+                $this->add_admin_notice( 'keys', 'notice notice-error', sprintf( __('Connection with Fiberpay service has been detected. Check if environment, API key, secret key, Collect order code and selected environment settings are correct.', 'fiberpay-payments' ), $setting_link ), true );
             }
 		}
 	}
@@ -138,17 +133,6 @@ class WC_Fiberpay_Admin_Notices {
 					break;
 			}
 		}
-	}
-
-	/**
-	 * Get setting link.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return string Setting link
-	 */
-	public function get_setting_link() {
-		return admin_url( 'admin.php?page=wc-settings&tab=checkout&section=fiberpay_payments&panel=settings' );
 	}
 }
 
