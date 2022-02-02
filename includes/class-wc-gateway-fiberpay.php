@@ -114,8 +114,7 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		}
 
 		$order = $this->read_collect_order_from_cache();
-
-		if ( ! empty( $order ) ) {
+		if ( ! empty( $order ) && isset($order['data']) && $this->collect_order_code === $order['data']['code']) {
 			return $order;
 		}
 
@@ -126,7 +125,7 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 		$options = get_option( 'woocommerce_fiberpay_payments_settings', [] );
 
-			return isset( $options['api_key'], $options['secret_key'] ) && trim( $options['api_key'] ) && trim( $options['secret_key'] );
+		return isset( $options['api_key'], $options['secret_key'] ) && trim( $options['api_key'] ) && trim( $options['secret_key'] );
 	}
 
 	/**
@@ -135,16 +134,13 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 	private function cache_collect_order() {
 		$expiration = 2 * HOUR_IN_SECONDS;
 
-		// need call_user_func() as (  $this->stripe_api )::retrieve this syntax is not supported in php < 5.2
 		$client = $this->getFiberpayClient();
 		$order = json_decode($client->getCollectOrderInfo($this->collect_order_code));
 
-
-		if (( $order->error ) ) {
+		if (!isset($order) || !isset($order->data) ) {
 			return [];
 		}
 
-		// Create or update the account option cache.
 		set_transient( $this->get_transient_key(), $order, $expiration );
 
 		return json_decode( wp_json_encode( $order ), true );
@@ -447,14 +443,11 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 			return ! empty( $old_value ) && ( $old_value !== $new_value );
 		};
 
-		// Look for updates.
-		if (
-			$has_changed( $old_api_key, $new_api_key )
-			|| $has_changed( $old_secret_key, $new_secret_key )
-			|| $has_changed( $old_is_test_env, $new_is_test_env )
-		) {
-			update_option( 'wc_fiberpay_payments_show_changed_keys_notice', 'yes' );
-		}
+		$shouldUpdate = $has_changed( $old_api_key, $new_api_key )
+		|| $has_changed( $old_secret_key, $new_secret_key )
+		|| $has_changed( $old_is_test_env, $new_is_test_env );
+
+		update_option( 'wc_fiberpay_payments_show_changed_keys_notice', $shouldUpdate ? 'yes' : 'no');
 	}
 
 	/**

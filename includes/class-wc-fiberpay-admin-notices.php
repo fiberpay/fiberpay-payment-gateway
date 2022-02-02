@@ -93,13 +93,6 @@ class WC_Fiberpay_Admin_Notices {
         $secret_key = isset( $options['secret_key'] ) ? $options['secret_key'] : '';
         $collect_order_code = isset( $options['collect_order_code'] ) ? $options['collect_order_code'] : '';
 
-        $order_data = Fiberpay_WC_Payment_Gateway::get_instance()->get_cached_collect_order();
-        // if (empty( $order_data ) ) {
-            $setting_link = $this->get_setting_link();
-            /* translators: 1) link */
-            $this->add_admin_notice( 'keys', 'notice notice-error', sprintf( __( 'Your customers cannot use Stripe on checkout, because we couldn\'t connect to your account. Please go to your settings and, <a href="%s">set your Stripe account keys</a>.', 'woocommerce-gateway-stripe' ), $setting_link ), true );
-        // }
-
 		if ( isset( $options['enabled'] ) && 'yes' === $options['enabled'] ) {
 			if ( empty( $show_curl_notice ) ) {
 				if (!function_exists( 'curl_init' ) ) {
@@ -107,39 +100,12 @@ class WC_Fiberpay_Admin_Notices {
 				}
 			}
 
-			if ( empty( $show_keys_notice ) && false) {
-				// Check if keys are entered properly per live/test mode.
-				if ( $is_test_env ) {
-					if (
-						! empty( $test_pub_key ) && ! preg_match( '/^pk_test_/', $test_pub_key )
-						|| ! empty( $test_secret_key ) && ! preg_match( '/^[rs]k_test_/', $test_secret_key ) ) {
-						$setting_link = $this->get_setting_link();
-						/* translators: 1) link */
-						$this->add_admin_notice( 'keys', 'notice notice-error', sprintf( __( 'Stripe is in test mode however your test keys may not be valid. Test keys start with pk_test and sk_test or rk_test. Please go to your settings and, <a href="%s">set your Stripe account keys</a>.', 'woocommerce-gateway-stripe' ), $setting_link ), true );
-					}
-				} else {
-					if (
-						! empty( $live_pub_key ) && ! preg_match( '/^pk_live_/', $live_pub_key )
-						|| ! empty( $live_secret_key ) && ! preg_match( '/^[rs]k_live_/', $live_secret_key ) ) {
-						$setting_link = $this->get_setting_link();
-						/* translators: 1) link */
-						$this->add_admin_notice( 'keys', 'notice notice-error', sprintf( __( 'Stripe is in live mode however your live keys may not be valid. Live keys start with pk_live and sk_live or rk_live. Please go to your settings and, <a href="%s">set your Stripe account keys</a>.', 'woocommerce-gateway-stripe' ), $setting_link ), true );
-					}
-				}
-
-				// Check if Stripe Account data was successfully fetched.
-                $order_data = Fiberpay_WC_Payment_Gateway::get_instance()->get_cached_collect_order();
-				if (empty( $order_data ) ) {
-					$setting_link = $this->get_setting_link();
-					/* translators: 1) link */
-					$this->add_admin_notice( 'keys', 'notice notice-error', sprintf( __( 'Your customers cannot use Stripe on checkout, because we couldn\'t connect to your account. Please go to your settings and, <a href="%s">set your Stripe account keys</a>.', 'woocommerce-gateway-stripe' ), $setting_link ), true );
-				}
-			}
-
-			if ( 'yes' === $changed_keys_notice ) {
-				// translators: %s is a the URL for the link.
-				$this->add_admin_notice( 'changed_keys', 'notice notice-warning', sprintf( __( 'The public and/or secret keys for the Stripe gateway have been changed. This might cause errors for existing customers and saved payment methods. <a href="%s" target="_blank">Click here to learn more</a>.', 'woocommerce-gateway-stripe' ), 'https://woocommerce.com/document/stripe-fixing-customer-errors' ), true );
-			}
+            $order_data = Fiberpay_WC_Payment_Gateway::get_instance()->get_cached_collect_order();
+            if ($changed_keys_notice && (empty( $order_data ) || $collect_order_code !== $order_data['data']['code'])) {
+            	$setting_link = $this->get_setting_link();
+                /* translators: 1) link */
+                $this->add_admin_notice( 'keys', 'notice notice-error', sprintf( __( 'Your customers cannot use Stripe on checkout, because we couldn\'t connect to your account. Please go to your settings and, <a href="%s">set your Stripe account keys</a>.', 'woocommerce-gateway-stripe' ), $setting_link ), true );
+            }
 		}
 	}
 
@@ -167,9 +133,6 @@ class WC_Fiberpay_Admin_Notices {
 					break;
 				case 'keys':
 					update_option( 'wc_fiberpay_show_keys_notice', 'no' );
-					break;
-				case 'changed_keys':
-					update_option( 'wc_fiberpay_show_changed_keys_notice', 'no' );
 					break;
 				default:
 					break;
