@@ -313,13 +313,6 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 				'description' => __('Your Fiberpay Collect Order Code', 'fiberpay-payments'),
 				'desc_tip' => true,
 			],
-			'instructions' => [
-				'title' => __('Instructions', 'fiberpay-payments'),
-				'type' => 'textarea',
-				'description' => __('Instructions that will be added to the thank you page and emails.', 'fiberpay-payments'),
-				'default' => '',
-				'desc_tip' => true,
-			],
 		];
 
 	}
@@ -368,16 +361,18 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 		if ( $totalAmount > 0 ) {
 			$orderItem = $order->get_meta('_fiberpay_create_item_response');
-			if(isset($orderItem)) {
+			if(!empty($orderItem)) {
 				$redirect = json_decode($orderItem)->data->redirect;
 			} else {
 				$client = $this->getFiberpayClient();
 
-				$description = 'Płatność [OPIS PŁATNOŚCI]';
+				$shopname = get_bloginfo('name');
+				$description = sprintf( __( '%s - Payment for order #%s', 'fiberpay-payments' ), $shopname, $order_id );
+
 				$currency = $order->get_data()['currency'];
-				$buyerFirstName = $order->get_billing_first_name();
-				$buyerLastName = $order->get_billing_last_name();
-				$buyerEmail = $order->get_billing_email();
+				// $buyerFirstName = $order->get_billing_first_name();
+				// $buyerLastName = $order->get_billing_last_name();
+				// $buyerEmail = $order->get_billing_email();
 
 				$callbackUrl = $this->getCallbackUrl();
 				$callbackParams = json_encode([
@@ -401,19 +396,12 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 				$order->save();
 				$redirect = $res->data->redirect;
 			}
-			// $order->update_status('failed');
-
 		} else {
 			$order->payment_complete();
 		}
 
 		// Remove cart.
 		WC()->cart->empty_cart();
-
-		// handle exception
-		$status = $res->status;
-
-		// Return thankyou redirect.
 
 		$ret = [
 			'result' => 'success',
@@ -450,31 +438,10 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		update_option( 'wc_fiberpay_payments_show_changed_keys_notice', $shouldUpdate ? 'yes' : 'no');
 	}
 
-	/**
-	* Return whether or not this gateway still requires setup to function.
-	*
-	* When this gateway is toggled on via AJAX, if this returns true a
-	* redirect will occur to the settings page instead.
-	*
-	* @since 3.4.0
-	* @return bool
-	*/
-	public function needs_setup() {
-		return false;
-	}
-
 	private function getFiberpayClient()
 	{
 		$client = new \FiberPay\FiberPayClient($this->api_key, $this->secret_key, $this->is_test_env);
 		return $client;
-	}
-
-	private function checkConfig()
-	{
-		$client = $this->getFiberpayClient();
-		// $ret = json_decode($client->getCollectOrderInfo($this->collect_order_code));
-
-		// return isset($ret->data);
 	}
 
 }
