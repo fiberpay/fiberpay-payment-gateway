@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-02-01T17:41:30+01:00\n"
+"POT-Creation-Date: 2022-02-03T13:54:36+01:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.6.0\n"
 
@@ -27,84 +27,96 @@ msgid "Take instant payments on your store."
 msgstr ""
 
 #. Author of the plugin
-#: includes/class-wc-gateway-fiberpay.php:41
+#: includes/class-wc-gateway-fiberpay.php:83
 msgid "Fiberpay"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:42
+#: includes/class-wc-fiberpay-admin-notices.php:96
+msgid "Fiberpay payment plugin - cURL is not installed."
+msgstr ""
+
+#: includes/class-wc-fiberpay-admin-notices.php:102
+msgid "Connection with Fiberpay service has been detected. Check if environment, API key, secret key, Collect order code and selected environment settings are correct."
+msgstr ""
+
+#: includes/class-wc-fiberpay-admin-notices.php:116
+msgid "Action failed. Please refresh the page and retry."
+msgstr ""
+
+#: includes/class-wc-fiberpay-admin-notices.php:120
+msgid "Current user can not manage woocommerce."
+msgstr ""
+
+#: includes/class-wc-gateway-fiberpay.php:84
 msgid "Fiberpay payment gateway"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:73
-#: includes/class-wc-gateway-fiberpay.php:191
-#: includes/class-wc-gateway-fiberpay.php:193
-msgid "Test Environment"
-msgstr ""
-
-#: includes/class-wc-gateway-fiberpay.php:171
+#: includes/class-wc-gateway-fiberpay.php:271
 msgid "Enable/Disable"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:173
+#: includes/class-wc-gateway-fiberpay.php:273
 msgid "Enable Fiberpay payments"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:177
+#: includes/class-wc-gateway-fiberpay.php:277
 msgid "Title"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:179
+#: includes/class-wc-gateway-fiberpay.php:279
 msgid "This controls the title which the user sees during checkout."
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:180
+#: includes/class-wc-gateway-fiberpay.php:280
 msgid "Fiberpay quick money transfer"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:184
+#: includes/class-wc-gateway-fiberpay.php:284
 msgid "Description"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:186
+#: includes/class-wc-gateway-fiberpay.php:286
 msgid "Payment method description that the customer will see on your checkout."
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:187
-msgid "Make your payment directly into our bank account. Please use your Order ID as the payment reference.Your order will not be shipped until the funds have cleared in our account."
+#: includes/class-wc-gateway-fiberpay.php:287
+msgid "Make your payment with quick money transfer or traditional bank transfer."
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:194
+#: includes/class-wc-gateway-fiberpay.php:291
+#: includes/class-wc-gateway-fiberpay.php:293
+msgid "Test Environment"
+msgstr ""
+
+#: includes/class-wc-gateway-fiberpay.php:294
 msgid "Check for test environment usage"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:199
+#: includes/class-wc-gateway-fiberpay.php:299
 msgid "Api Key"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:201
+#: includes/class-wc-gateway-fiberpay.php:301
 msgid "Your Fiberpay Api Key"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:205
+#: includes/class-wc-gateway-fiberpay.php:305
 msgid "Secret Key"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:207
+#: includes/class-wc-gateway-fiberpay.php:307
 msgid "Your Fiberpay Secret Key"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:211
+#: includes/class-wc-gateway-fiberpay.php:311
 msgid "Collect order code"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:213
+#: includes/class-wc-gateway-fiberpay.php:313
 msgid "Your Fiberpay Collect Order Code"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:217
-msgid "Instructions"
-msgstr ""
-
-#: includes/class-wc-gateway-fiberpay.php:219
-msgid "Instructions that will be added to the thank you page and emails."
+#. translators: The first placeholder is a shop name, the second is a order identifier.
+#: includes/class-wc-gateway-fiberpay.php:371
+msgid "%1$s - Payment for order #%2$s"
 msgstr ""

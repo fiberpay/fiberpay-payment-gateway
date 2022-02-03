@@ -284,7 +284,7 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 				'title' => __('Description', 'fiberpay-payments'),
 				'type' => 'textarea',
 				'description' => __('Payment method description that the customer will see on your checkout.', 'fiberpay-payments'),
-				'default' => __('Make your payment directly into our bank account. Please use your Order ID as the payment reference.Your order will not be shipped until the funds have cleared in our account.', 'fiberpay-payments'),
+				'default' => __('Make your payment with quick money transfer or traditional bank transfer.', 'fiberpay-payments'),
 				'desc_tip' => true,
 			],
 			'is_test_env' => [
@@ -367,7 +367,8 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 				$client = $this->getFiberpayClient();
 
 				$shopname = get_bloginfo('name');
-				$description = sprintf( __( '%s - Payment for order #%s', 'fiberpay-payments' ), $shopname, $order_id );
+				/* translators: The first placeholder is a shop name, the second is a order identifier. */
+				$description = sprintf( __( '%1$s - Payment for order #%2$s', 'fiberpay-payments' ), $shopname, $order_id );
 
 				$currency = $order->get_data()['currency'];
 				// $buyerFirstName = $order->get_billing_first_name();
