@@ -86,7 +86,6 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		// Define user set variables.
 		$this->title = $this->get_option('title');
 		$this->description = $this->get_option('description');
-		$this->instructions = $this->get_option('instructions');
 		$this->collect_order_code = $this->get_option('collect_order_code');
 		$this->is_test_env = $this->get_option('is_test_env');
 		$this->api_key = $this->get_option('api_key');
@@ -284,7 +283,7 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 				'title' => __('Description', 'fiberpay-payments'),
 				'type' => 'textarea',
 				'description' => __('Payment method description that the customer will see on your checkout.', 'fiberpay-payments'),
-				'default' => __('Make your payment with quick money transfer or traditional bank transfer.', 'fiberpay-payments'),
+				'default' => __('Make your payment with a quick money transfer or traditional bank transfer.', 'fiberpay-payments'),
 				'desc_tip' => true,
 			],
 			'is_test_env' => [
