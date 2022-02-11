@@ -8,7 +8,7 @@ Setting up plugin requires as follows:
 - creating payment order of type Collect
 - entering API keys and the Collect order identifier (code) on the plugin configuration screen
 
-**Prior to plugin production usage, it is highly recommended to create [sandbox account](https://test.fiberpay.pl) for integration tests in a safe environment.**
+**Prior to production usage, it is highly recommended to create [sandbox account](https://test.fiberpay.pl) for integration tests in a safe environment.**
 
 Please do not hesitate to [contact us](mailto:info@fiberpay.pl) if we can be of any further assistance.
 
