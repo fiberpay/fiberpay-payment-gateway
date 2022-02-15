@@ -16,7 +16,7 @@ use Firebase\JWT\SignatureInvalidException;
 */
 class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
-	private $CALLBACK_URL = "fiberpay_payment_callback";
+	private $CALLBACK_URL = "fiberpay-payment-callback";
 
 	const PROD_COLLECT_ORDER_OPTION    = 'wc_fiberpay_order_data_prod';
 	const TEST_COLLECT_ORDER_OPTION    = 'wc_fiberpay_order_data_test';
@@ -256,7 +256,7 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 	private function getCallbackUrl()
 	{
-		$url = WC()->api_request_url( $this->SUCCESS_CALLBACK_URL );
+		$url = WC()->api_request_url( $this->CALLBACK_URL );
 		return $url;
 	}
 
@@ -283,7 +283,7 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 				'title' => __('Description', 'fiberpay-payments'),
 				'type' => 'textarea',
 				'description' => __('Payment method description that the customer will see on your checkout.', 'fiberpay-payments'),
-				'default' => __('Make your payment with a quick money transfer or traditional bank transfer.', 'fiberpay-payments'),
+				'default' => __('Make your payment with quick money transfer or traditional bank transfer.', 'fiberpay-payments'),
 				'desc_tip' => true,
 			],
 			'is_test_env' => [
