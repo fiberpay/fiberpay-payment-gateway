@@ -317,36 +317,6 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
-	* Output for the order received page.
-	*
-	* @param int $order_id Order ID.
-	*/
-	public function thankyou_page( $order_id ) {
-
-		if ( $this->instructions ) {
-			echo wp_kses_post( wpautop( wptexturize( wp_kses_post( $this->instructions ) ) ));
-		}
-
-	}
-
-	/**
-	* Add content to the WC emails.
-	*
-	* @param WC_Order $order Order object.
-	* @param bool $sent_to_admin Sent to admin.
-	* @param bool $plain_text Email format: plain text or HTML.
-	*/
-	public function email_instructions( $order, $sent_to_admin, $plain_text = false ) {
-
-		if ( ! $sent_to_admin && 'bacs' === $order->get_payment_method() && $order->has_status('on-hold') ) {
-			if ( $this->instructions ) {
-				echo wp_kses_post( wpautop( wptexturize( $this->instructions ) ) . PHP_EOL);
-			}
-		}
-
-	}
-
-	/**
 	* Process the payment and return the result.
 	*
 	* @param int $order_id Order ID.
@@ -379,6 +349,8 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 					'wc_order_id' => $order_id,
 				]);
 
+				$redirectUrl = $order->get_checkout_order_received_url();
+
 				$res = $client->addCollectItem(
 					$this->collect_order_code,
 					$description,
@@ -387,7 +359,7 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 					$callbackUrl,
 					$callbackParams,
 					null,
-					null,
+					$redirectUrl
 				);
 
 				$order->update_meta_data( '_fiberpay_create_item_response', $res );
@@ -405,7 +377,6 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 		$ret = [
 			'result' => 'success',
-			// 'redirect' => $this->get_return_url( $order ),
 			'redirect' => $redirect,
 		];
 
