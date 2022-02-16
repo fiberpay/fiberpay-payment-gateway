@@ -1,6 +1,5 @@
 # Fiberpay Payment Gateway
-Fiberpay payment gateway plugin for WooCommerce
-
+Fiberpay payment gateway plugin
 ## Setup
 Setting up plugin requires as follows:
 - creating an account in the Fiberpay service
