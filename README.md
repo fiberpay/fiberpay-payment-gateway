@@ -1,4 +1,4 @@
-# Woocommerce Fiberpay Payment Gateway
+# Fiberpay Payment Gateway
 Fiberpay payment gateway plugin for WooCommerce
 
 ## Setup
