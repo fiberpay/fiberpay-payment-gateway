@@ -1,9 +1,9 @@
 <?php
 /*
  * Plugin Name: Fiberpay Payment Gateway
- * Plugin URI: https://fiberpay.pl
+ * Plugin URI: https://github.com/fiberpay/fiberpay-payment-gateway
  * Description: Take instant payments on your store.
- * Author: fiberpay.pl
+ * Author: Fiberpay Sp. z o.o.
  * Author URI: https://fiberpay.pl
  * Text Domain: fiberpay-payments
  * Domain Path: /languages
