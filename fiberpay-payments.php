@@ -1,9 +1,9 @@
 <?php
 /*
- * Plugin Name: WooCommerce Fiberpay Payment Gateway
+ * Plugin Name: Fiberpay Payment Gateway
  * Plugin URI: https://fiberpay.pl
  * Description: Take instant payments on your store.
- * Author: Fiberpay
+ * Author: fiberpay.pl
  * Author URI: https://fiberpay.pl
  * Text Domain: fiberpay-payments
  * Domain Path: /languages

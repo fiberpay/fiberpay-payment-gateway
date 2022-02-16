@@ -1,6 +1,6 @@
 {
-    "name": "fiberpay/fiberpay-woocommerce-plugin",
-    "description": "Fiberpay payment gateway plugin for WooCommerce",
+    "name": "fiberpay/fiberpay-payment-gateway",
+    "description": "Fiberpay payment gateway",
     "require": {
         "fiberpay/fiberpay-php": "^0.1.5",
         "firebase/php-jwt": "^6.0"
