@@ -1,0 +1,41 @@
+<?php return array(
+    'root' => array(
+        'name' => 'fiberpay/fiberpay-payment-gateway',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => 'ab0144fc12a3d9756009f9dd9d6333fff796e7b3',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'dev' => true,
+    ),
+    'versions' => array(
+        'fiberpay/fiberpay-payment-gateway' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => 'ab0144fc12a3d9756009f9dd9d6333fff796e7b3',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'fiberpay/fiberpay-php' => array(
+            'pretty_version' => '0.1.5',
+            'version' => '0.1.5.0',
+            'reference' => 'b6732e638bf31dfe3404d8ed39df202dac37d6ea',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../fiberpay/fiberpay-php',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'firebase/php-jwt' => array(
+            'pretty_version' => 'v6.11.0',
+            'version' => '6.11.0.0',
+            'reference' => '8f718f4dfc9c5d5f0c994cdfd103921b43592712',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../firebase/php-jwt',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+    ),
+);

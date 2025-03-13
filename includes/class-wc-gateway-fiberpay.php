@@ -15,6 +15,11 @@ use Firebase\JWT\SignatureInvalidException;
 * @package Fiberpay\Payment
 */
 class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
+	   public mixed $collect_order_code;
+	   public mixed $is_test_env;
+	   public mixed $api_key;
+	   public mixed $secret_key;
+
 
 	private $CALLBACK_URL = "fiberpay-payment-callback";
 

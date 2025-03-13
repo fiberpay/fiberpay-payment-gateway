@@ -24,6 +24,44 @@ if ( ! $loader ) {
 	throw new Exception( 'vendor/autoload.php missing please run `composer install`' );
 }
 
+
+// Declare WooCommerce Blocks compatibility
+add_action('before_woocommerce_init', function() {
+    if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
+        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
+        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('cart_checkout_blocks', __FILE__, true);
+    }
+});
+
+// Register Blocks support
+add_action('woocommerce_blocks_loaded', function() {
+    if (!class_exists('Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType')) {
+        return;
+    }
+
+    require_once dirname(__FILE__) . '/includes/blocks/class-fiberpay-blocks.php';
+    add_action(
+        'woocommerce_blocks_payment_method_type_registration',
+        function(Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry) {
+            $payment_method_registry->register(new Fiberpay_Blocks_Support());
+        }
+    );
+});
+
+function enqueue_payment_gateway_script() {
+    // Ensure the WooCommerce Blocks script is loaded before this one
+    wp_register_script(
+        'your-payment-gateway-blocks',
+        plugins_url('assets/js/your-payment-gateway-blocks.js', __FILE__),
+        array('wc-blocks-registry'), // This ensures wc-blocks-registry is loaded first
+        '1.0.0',
+        true
+    );
+    wp_enqueue_script('your-payment-gateway-blocks');
+}
+
+add_action('wp_enqueue_scripts', 'enqueue_payment_gateway_script');
+
 function fiberpay_add_gateway_class($gateways) {
 	$gateways[] = 'Fiberpay_WC_Payment_Gateway';
 	return $gateways;
