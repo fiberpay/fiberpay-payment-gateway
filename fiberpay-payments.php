@@ -49,6 +49,8 @@ add_action('woocommerce_blocks_loaded', function() {
     error_log('Fiberpay: AbstractPaymentMethodType class exists, loading class-fiberpay-blocks.php');
     require_once dirname(__FILE__) . '/includes/blocks/class-fiberpay-blocks.php';
     error_log('Fiberpay: Adding woocommerce_blocks_payment_method_type_registration action');
+    
+    // Register the payment method with WooCommerce Blocks
     add_action(
         'woocommerce_blocks_payment_method_type_registration',
         function(Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry) {
@@ -58,62 +60,47 @@ add_action('woocommerce_blocks_loaded', function() {
             error_log('Fiberpay: Fiberpay_Blocks_Support registered successfully');
         }
     );
-});
 
-// Explicitly register our script with WooCommerce Blocks
-add_action('wp_enqueue_scripts', 'fiberpay_payment_blocks_init', 5);
-function fiberpay_payment_blocks_init() {
-    error_log('Fiberpay: fiberpay_payment_blocks_init called');
-    
-    if (!class_exists('WC_Blocks_Payments_Api')) {
-        error_log('Fiberpay: WC_Blocks_Payments_Api class does not exist');
-        return;
-    }
-    
-    error_log('Fiberpay: WC_Blocks_Payments_Api class exists');
-    add_action('woocommerce_blocks_enqueue_checkout_block_scripts', 'enqueue_payment_gateway_script');
-    add_action('woocommerce_blocks_enqueue_cart_block_scripts', 'enqueue_payment_gateway_script');
-}
+    // Register and enqueue our block scripts
+    add_action('init', function() {
+        error_log('Fiberpay: Registering block scripts');
+        
+        if (!function_exists('register_block_type')) {
+            error_log('Fiberpay: Block editor not available');
+            return;
+        }
 
-function enqueue_payment_gateway_script() {
-    error_log('Fiberpay: enqueue_payment_gateway_script function called');
-    
-    // Ensure the WooCommerce Blocks script is loaded before this one
-    wp_register_script(
-        'fiberpay-blocks',
-        plugins_url('assets/js/blocks.js', __FILE__),
-        array('wc-blocks-registry', 'wc-settings', 'wp-element'), // Added required dependencies
-        '1.0.0',
-        true
-    );
-    error_log('Fiberpay: fiberpay-blocks script registered');
-    
-    // Get payment gateway instance to access settings
-    if (class_exists('Fiberpay_WC_Payment_Gateway')) {
-        $gateway = new Fiberpay_WC_Payment_Gateway();
-        $payment_data = [
-            'title' => $gateway->get_title(),
-            'description' => $gateway->get_description(),
-            'enabled' => $gateway->enabled === 'yes',
-            'is_test_env' => $gateway->is_test_env === 'yes',
-            'gateway_id' => $gateway->id,
-        ];
-        
-        error_log('Fiberpay: Localizing payment data: ' . wp_json_encode($payment_data));
-        
-        // Add data to be available in blocks.js
-        wp_localize_script(
+        wp_register_script(
             'fiberpay-blocks',
-            'fiberpay_payments_data',
-            $payment_data
+            plugins_url('assets/js/blocks.js', __FILE__),
+            ['wp-element', 'wp-components', 'wp-blocks', 'wp-block-editor', 'wc-blocks-registry', 'wc-settings'],
+            '1.0.0',
+            true
         );
-    } else {
-        error_log('Fiberpay: Fiberpay_WC_Payment_Gateway class not found');
-    }
-    
-    wp_enqueue_script('fiberpay-blocks');
-    error_log('Fiberpay: fiberpay-blocks script enqueued');
-}
+
+        // Get payment gateway instance to access settings
+        if (class_exists('Fiberpay_WC_Payment_Gateway')) {
+            $gateway = new Fiberpay_WC_Payment_Gateway();
+            $payment_data = [
+                'title' => $gateway->get_title(),
+                'description' => $gateway->get_description(),
+                'enabled' => $gateway->enabled === 'yes',
+                'is_test_env' => $gateway->is_test_env === 'yes',
+                'gateway_id' => $gateway->id,
+            ];
+            
+            error_log('Fiberpay: Localizing payment data: ' . wp_json_encode($payment_data));
+            
+            wp_localize_script(
+                'fiberpay-blocks',
+                'fiberpay_payments_data',
+                $payment_data
+            );
+        }
+
+        error_log('Fiberpay: Block scripts registered successfully');
+    }, 5);
+});
 
 function fiberpay_add_gateway_class($gateways) {
 	$gateways[] = 'Fiberpay_WC_Payment_Gateway';

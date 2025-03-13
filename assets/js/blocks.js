@@ -1,5 +1,6 @@
 const { registerPaymentMethod } = wc.wcBlocksRegistry;
 const { getSetting } = wc.wcSettings;
+const { createElement } = window.wp.element;
 
 console.log('Fiberpay blocks.js loaded');
 
@@ -23,43 +24,27 @@ const FiberpayComponent = (props) => {
         };
     });
 
-    return (
-        <div className="wc-block-checkout__payment-method">
-            <div className="wc-block-components-radio-control">
-                <div className="wc-block-components-radio-control__option">
-                    <input
-                        type="radio"
-                        id="fiberpay-payment-method"
-                        name="payment-method"
-                        value="fiberpay_payments"
-                        checked={true}
-                    />
-                    <label htmlFor="fiberpay-payment-method">
-                        {settings.title || 'Fiberpay'}
-                    </label>
-                </div>
-            </div>
-            {settings.description && (
-                <div className="wc-block-components-payment-method-description">
-                    {settings.description}
-                </div>
-            )}
-        </div>
+    return createElement('div', { className: 'wc-block-components-payment-method-label' },
+        settings.title || 'Fiberpay',
+        settings.description && createElement('div', {
+            className: 'wc-block-components-payment-method-description',
+            dangerouslySetInnerHTML: { __html: settings.description }
+        })
     );
 };
 
 const paymentMethod = {
     name: 'fiberpay_payments',
     label: settings.title || 'Fiberpay',
-    content: <FiberpayComponent />,
-    edit: <FiberpayComponent />,
+    content: createElement(FiberpayComponent),
+    edit: createElement(FiberpayComponent),
     canMakePayment: () => {
         console.log('Fiberpay canMakePayment called, returning true');
         return true;
     },
-    ariaLabel: 'Fiberpay Payment Method',
+    ariaLabel: settings.title || 'Fiberpay Payment Method',
     supports: {
-        features: ['products', 'subscriptions', 'refunds', 'tokenization']
+        features: settings.supports || ['products']
     },
 };
 

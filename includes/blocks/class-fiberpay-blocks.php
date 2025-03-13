@@ -1,17 +1,20 @@
 <?php
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 
+/**
+ * Class Fiberpay_Blocks_Support
+ */
 class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
+    /**
+     * @var WC_Gateway_Fiberpay
+     */
     private $gateway;
     
+    /**
+     * Constructor
+     */
     public function __construct() {
         error_log('Fiberpay_Blocks_Support: Constructor called');
-        
-        // Make sure the gateway class is loaded
-        if (!class_exists('Fiberpay_WC_Payment_Gateway')) {
-            error_log('Fiberpay_Blocks_Support: Fiberpay_WC_Payment_Gateway class not found, loading it now');
-            include_once plugin_dir_path(__FILE__) . '/../../includes/class-wc-gateway-fiberpay.php';
-        }
         
         // Get WooCommerce's payment gateways to make sure our gateway is properly initialized
         $payment_gateways = WC()->payment_gateways()->payment_gateways();
@@ -26,27 +29,63 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
         
         error_log('Fiberpay_Blocks_Support: Gateway instance created, ID: ' . $this->gateway->id);
         error_log('Fiberpay_Blocks_Support: Gateway enabled: ' . ($this->gateway->enabled === 'yes' ? 'yes' : 'no'));
+
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_payment_scripts']);
     }
 
-    public function get_name() {
-        error_log('Fiberpay_Blocks_Support: get_name called, returning: ' . $this->gateway->id);
-        return $this->gateway->id;
+    /**
+     * Returns if this payment method should be active. If false, the scripts will not be enqueued.
+     *
+     * @return boolean
+     */
+    public function is_active() {
+        $active = $this->gateway->enabled === 'yes';
+        error_log('Fiberpay_Blocks_Support: is_active called, returning: ' . ($active ? 'true' : 'false'));
+        return $active;
     }
 
+    /**
+     * Returns an array of scripts/handles to be registered for this payment method.
+     *
+     * @return array
+     */
     public function get_payment_method_script_handles() {
         error_log('Fiberpay_Blocks_Support: get_payment_method_script_handles called');
+        $script_path = 'assets/js/blocks.js';
+        $script_asset_path = dirname(dirname(dirname(__FILE__))) . '/assets/js/blocks.asset.php';
+        $script_asset = file_exists($script_asset_path)
+            ? require($script_asset_path)
+            : array(
+                'dependencies' => array('wp-blocks', 'wp-element', 'wp-components', 'wc-blocks-registry', 'wc-settings'),
+                'version' => '1.0.0'
+            );
+
         wp_register_script(
             'fiberpay-blocks',
-            plugins_url('../../assets/js/blocks.js', __FILE__),
-            array('wc-blocks-registry', 'wc-settings', 'wp-element'),
-            '1.0.0',
+            plugins_url($script_path, dirname(dirname(__FILE__))),
+            $script_asset['dependencies'],
+            $script_asset['version'],
             true
         );
+
+        if ($this->is_active()) {
+            wp_enqueue_script('fiberpay-blocks');
+            wp_localize_script(
+                'fiberpay-blocks',
+                'fiberpay_payments_data',
+                $this->get_payment_method_data()
+            );
+        }
 
         error_log('Fiberpay_Blocks_Support: Script registered');
         return ['fiberpay-blocks'];
     }
 
+    /**
+     * Returns an array of key=>value pairs of data made available to the payment methods script.
+     *
+     * @return array
+     */
     public function get_payment_method_data() {
         error_log('Fiberpay_Blocks_Support: get_payment_method_data called');
         $data = [
@@ -56,11 +95,17 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
             'icon' => $this->gateway->icon,
             'enabled' => $this->gateway->enabled === 'yes',
             'is_test_env' => $this->gateway->is_test_env === 'yes',
+            'gateway_id' => $this->gateway->id,
         ];
         error_log('Fiberpay_Blocks_Support: Returning data: ' . wp_json_encode($data));
         return $data;
     }
 
+    /**
+     * Returns an array of supported features.
+     *
+     * @return array
+     */
     public function get_supported_features() {
         error_log('Fiberpay_Blocks_Support: get_supported_features called');
         return [
@@ -68,14 +113,26 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
         ];
     }
 
-    public function is_active() {
-        $active = $this->gateway->enabled === 'yes';
-        error_log('Fiberpay_Blocks_Support: is_active called, returning: ' . ($active ? 'true' : 'false'));
-        return $active;
+    /**
+     * Returns the name of the payment method.
+     */
+    public function get_name() {
+        error_log('Fiberpay_Blocks_Support: get_name called, returning: ' . $this->gateway->id);
+        return $this->gateway->id;
     }
 
-    public function initialize() {
-        error_log('Fiberpay_Blocks_Support: initialize called');
-        // This method can be used to register hooks or do other setup tasks
+    /**
+     * Enqueue payment scripts
+     */
+    public function enqueue_payment_scripts() {
+        if (!is_cart() && !is_checkout() && !isset($_GET['pay_for_order'])) {
+            return;
+        }
+
+        if (!$this->is_active()) {
+            return;
+        }
+
+        $this->get_payment_method_script_handles();
     }
 }
