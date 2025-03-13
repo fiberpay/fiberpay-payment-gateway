@@ -1,13 +1,18 @@
 const { registerPaymentMethod } = wc.wcBlocksRegistry;
 const { getSetting } = wc.wcSettings;
 
+console.log('Fiberpay blocks.js loaded');
+
 const settings = getSetting('fiberpay_payments_data', {});
+console.log('Fiberpay settings loaded:', settings);
 
 const FiberpayComponent = (props) => {
+    console.log('Fiberpay component rendering with props:', props);
     const { eventRegistration, emitResponse } = props;
     const { onPaymentSetup } = eventRegistration;
 
     onPaymentSetup(() => {
+        console.log('Fiberpay onPaymentSetup triggered');
         return {
             type: emitResponse.responseTypes.SUCCESS,
             meta: {
@@ -30,7 +35,7 @@ const FiberpayComponent = (props) => {
                         checked={true}
                     />
                     <label htmlFor="fiberpay-payment-method">
-                        {settings.title}
+                        {settings.title || 'Fiberpay'}
                     </label>
                 </div>
             </div>
@@ -48,12 +53,15 @@ const paymentMethod = {
     label: settings.title || 'Fiberpay',
     content: <FiberpayComponent />,
     edit: <FiberpayComponent />,
-    canMakePayment: () => true,
+    canMakePayment: () => {
+        console.log('Fiberpay canMakePayment called, returning true');
+        return true;
+    },
     ariaLabel: 'Fiberpay Payment Method',
     supports: {
         features: ['products', 'subscriptions', 'refunds', 'tokenization']
     },
 };
 
-console.log('Registering Fiberpay payment method');
+console.log('Registering Fiberpay payment method:', paymentMethod);
 registerPaymentMethod(paymentMethod);
