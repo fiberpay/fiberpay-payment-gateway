@@ -11,7 +11,7 @@ use Firebase\JWT\SignatureInvalidException;
 *
 * @class Fiberpay_WC_Payment_Gateway
 * @extends WC_Payment_Gateway
-* @version 0.1.0
+* @version 0.1.1
 * @package Fiberpay\Payment
 */
 class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {

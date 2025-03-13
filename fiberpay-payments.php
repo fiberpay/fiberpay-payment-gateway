@@ -7,7 +7,7 @@
  * Author URI: https://fiberpay.pl
  * Text Domain: fiberpay-payments
  * Domain Path: /languages
- * Version: 0.1.0
+ * Version: 0.1.1
  */
 
 if (!defined( 'ABSPATH')) {
