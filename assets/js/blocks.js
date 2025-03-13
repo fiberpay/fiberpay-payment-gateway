@@ -1,52 +1,28 @@
-const { registerPaymentMethod } = wc.wcBlocksRegistry;
-const { getSetting } = wc.wcSettings;
-const { createElement } = window.wp.element;
+const { registerPaymentMethod } = window.wc.wcBlocksRegistry;
+const { getSetting } = window.wc.wcSettings;
 
-console.log('Fiberpay blocks.js loaded');
-
-const settings = getSetting('fiberpay_payments_data', {});
-console.log('Fiberpay settings loaded:', settings);
-
-const FiberpayComponent = (props) => {
-    console.log('Fiberpay component rendering with props:', props);
-    const { eventRegistration, emitResponse } = props;
-    const { onPaymentSetup } = eventRegistration;
-
-    onPaymentSetup(() => {
-        console.log('Fiberpay onPaymentSetup triggered');
-        return {
-            type: emitResponse.responseTypes.SUCCESS,
-            meta: {
-                paymentMethodData: {
-                    payment_method: 'fiberpay_payments'
-                }
-            }
-        };
-    });
-
-    return createElement('div', { className: 'wc-block-components-payment-method-label' },
-        settings.title || 'Fiberpay',
-        settings.description && createElement('div', {
-            className: 'wc-block-components-payment-method-description',
-            dangerouslySetInnerHTML: { __html: settings.description }
-        })
-    );
+const settings = window.fiberpay_payments_data || {
+    title: 'Fiberpay',
+    description: 'Pay with Fiberpay',
+    enabled: true,
 };
 
-const paymentMethod = {
-    name: 'fiberpay_payments',
-    label: settings.title || 'Fiberpay',
-    content: createElement(FiberpayComponent),
-    edit: createElement(FiberpayComponent),
-    canMakePayment: () => {
-        console.log('Fiberpay canMakePayment called, returning true');
-        return true;
-    },
-    ariaLabel: settings.title || 'Fiberpay Payment Method',
+const FiberpayComponent = () => {
+    return window.wp.element.createElement('div', null, settings.description);
+};
+
+const fiberpayPaymentMethod = {
+    name: 'fiberpay',
+    label: settings.title,
+    content: window.wp.element.createElement(FiberpayComponent, null),
+    edit: window.wp.element.createElement(FiberpayComponent, null),
+    canMakePayment: () => true,
+    ariaLabel: settings.title,
     supports: {
-        features: settings.supports || ['products']
+        features: settings.supports || [],
     },
 };
 
-console.log('Registering Fiberpay payment method:', paymentMethod);
-registerPaymentMethod(paymentMethod);
+if (settings.enabled) {
+    registerPaymentMethod(fiberpayPaymentMethod);
+}

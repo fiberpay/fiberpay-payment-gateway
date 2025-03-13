@@ -96,18 +96,13 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		$this->api_key = $this->get_option('api_key');
 		$this->secret_key = $this->get_option('secret_key');
 
-		// Actions.
+		// Actions for traditional checkout
+		add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
+		add_action('woocommerce_thankyou_' . $this->id, array($this, 'thankyou_page'));
+		add_action('woocommerce_email_before_order_table', array($this, 'email_instructions'), 10, 3);
 
-
-		// add_action('woocommerce_order_status_cancelled', [$this, 'handle_order_cancelled']);
-
-		// add callback endpoint
-		add_action( 'woocommerce_api_'. $this->CALLBACK_URL, [$this, 'handle_callback']);
-
-		// add_action('woocommerce_thankyou_bacs', [$this, 'thankyou_page']);
-
-		// Customer Emails.
-		// add_action('woocommerce_email_before_order_table', [$this, 'email_instructions'], 10, 3);
+		// Add callback endpoint
+		add_action('woocommerce_api_'. $this->CALLBACK_URL, [$this, 'handle_callback']);
 
 		add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
 	}
@@ -418,6 +413,48 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 	{
 		$client = new \FiberPay\FiberPayClient($this->api_key, $this->secret_key, $this->is_test_env);
 		return $client;
+	}
+
+	/**
+	 * Output for the order received page.
+	 */
+	public function thankyou_page($order_id) {
+		$order = wc_get_order($order_id);
+		if ($order && $order->get_payment_method() === $this->id) {
+			if ($order->has_status('on-hold')) {
+				echo '<p class="woocommerce-notice woocommerce-notice--success">' . 
+					 esc_html__('Thank you for your order. We are now redirecting you to Fiberpay to make payment.', 'fiberpay-payments') . 
+					 '</p>';
+			}
+		}
+	}
+
+	/**
+	 * Add content to the WC emails.
+	 */
+	public function email_instructions($order, $sent_to_admin, $plain_text = false) {
+		if ($sent_to_admin || $order->get_payment_method() !== $this->id || !$order->has_status('on-hold')) {
+			return;
+		}
+
+		echo wp_kses_post(wpautop(wptexturize($this->description)));
+	}
+
+	/**
+	 * Receipt page for traditional checkout
+	 */
+	public function receipt_page($order_id) {
+		$order = wc_get_order($order_id);
+		
+		echo '<p>' . esc_html__('Thank you for your order, please click the button below to pay with Fiberpay.', 'fiberpay-payments') . '</p>';
+		
+		$orderItem = $order->get_meta('_fiberpay_create_item_response');
+		if (!empty($orderItem)) {
+			$redirect = json_decode($orderItem)->data->redirect;
+			echo '<p><a class="button" href="' . esc_url($redirect) . '">' . 
+				 esc_html__('Pay with Fiberpay', 'fiberpay-payments') . 
+				 '</a></p>';
+		}
 	}
 
 }
