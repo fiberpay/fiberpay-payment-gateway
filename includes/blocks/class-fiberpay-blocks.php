@@ -135,4 +135,7 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
 
         $this->get_payment_method_script_handles();
     }
+
+    public function initialize() {
+    }
 }
