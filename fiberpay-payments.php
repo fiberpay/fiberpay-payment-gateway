@@ -51,13 +51,13 @@ add_action('woocommerce_blocks_loaded', function() {
 function enqueue_payment_gateway_script() {
     // Ensure the WooCommerce Blocks script is loaded before this one
     wp_register_script(
-        'your-payment-gateway-blocks',
-        plugins_url('assets/js/your-payment-gateway-blocks.js', __FILE__),
-        array('wc-blocks-registry'), // This ensures wc-blocks-registry is loaded first
+        'fiberpay-blocks',
+        plugins_url('assets/js/blocks.js', __FILE__),
+        array('wc-blocks-registry', 'wc-settings', 'wp-element'), // Added required dependencies
         '1.0.0',
         true
     );
-    wp_enqueue_script('your-payment-gateway-blocks');
+    wp_enqueue_script('fiberpay-blocks');
 }
 
 add_action('wp_enqueue_scripts', 'enqueue_payment_gateway_script');

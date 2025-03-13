@@ -21,7 +21,6 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
             true
         );
 
-        error_log('FIBER get_payment_method_script_handles');
         return ['fiberpay-blocks'];
     }
 
@@ -31,13 +30,19 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
             'description' => $this->gateway->get_description(),
             'supports' => $this->get_supported_features(),
             'icon' => $this->gateway->icon,
+            'enabled' => $this->gateway->enabled === 'yes',
+            'is_test_env' => $this->gateway->is_test_env === 'yes',
         ];
     }
 
     public function get_supported_features() {
         return [
-            'products',
+            'products'
         ];
+    }
+
+    public function is_active() {
+        return $this->gateway->enabled === 'yes';
     }
 
     public function initialize() {
