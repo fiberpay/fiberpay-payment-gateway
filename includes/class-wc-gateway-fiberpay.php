@@ -416,7 +416,7 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 	private function getFiberpayClient()
 	{
-		$client = new \FiberPay\FiberPayClient($this->api_key, $this->secret_key, $this->is_test_env);
+		$client = new \FiberPay\FiberPayClient($this->api_key, $this->secret_key, $this->is_test_env === 'yes');
 		return $client;
 	}
 
