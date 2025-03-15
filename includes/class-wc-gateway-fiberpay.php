@@ -217,7 +217,7 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 	{
 		$headers = apache_request_headers();
 		if($headers) {
-			$apiKeyHeader = $headers['Api-Key'];
+			$apiKeyHeader = $headers['API-Key'];
 		} else {
 			$apiKeyHeader = $_SERVER['HTTP_API_KEY'];
 		};

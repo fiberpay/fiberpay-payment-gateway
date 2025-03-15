@@ -34,7 +34,7 @@ Setting up plugin requires as follows:
 
 ## Documentation
 
-- [API documentation](https://fiberpay.gitbook.io/fiberpay/fiberpay)
+- [API documentation](https://github.com/fiberpay/api/blob/master/fiberpay.md)
 - For support queries, please [contact us](mailto:info@fiberpay.pl)
 
 ## License
