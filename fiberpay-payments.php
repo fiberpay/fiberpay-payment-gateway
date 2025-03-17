@@ -7,7 +7,7 @@
  * Author URI: https://fiberpay.pl
  * Text Domain: fiberpay-payments
  * Domain Path: /languages
- * Version: 0.1.2
+ * Version: 0.1.3
  * Requires at least: 5.0
  * Requires PHP: 7.2
  * WC requires at least: 6.0
