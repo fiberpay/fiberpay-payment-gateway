@@ -222,11 +222,19 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		$headers = apache_request_headers();
         wc_get_logger()->debug('Fiberpay: apache_request_headers', $headers);
 		if($headers) {
+            $capitalied = $headers['Api-Key'] ?? null;
+            $upper = $headers['API-Key'] ?? null;
+            wc_get_logger()->debug('Fiberpay: api_key_headers', ['capitalized' => $capitalied, 'upper' => $upper]);
+
 			$apiKeyHeader = $headers['API-Key'];
 		} else {
 			$apiKeyHeader = $_SERVER['HTTP_API_KEY'];
 		};
 
+        wc_get_logger()->debug('Fiberpay: apiKeyHeader', [
+            'apiKeyHeader' => $apiKeyHeader,
+            'this->api_key' => $this->api_key,
+        ]);
 		return $apiKeyHeader === $this->api_key;
 	}
 
