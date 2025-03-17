@@ -1,3 +1,4 @@
 *.swp
 .aider*
 .idea
+.DS_Store
