@@ -207,7 +207,11 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		$order = wc_get_order($orderId);
 
 		if(!$order) {
-			wp_die("Order with id $orderId not found", '', ['response' => 400]);
+			wp_die(
+				esc_html(sprintf(__('Order with id %d not found', 'fiberpay-payments'), $orderId)),
+				'',
+				['response' => 400]
+			);
 		}
 
 		return $order;
