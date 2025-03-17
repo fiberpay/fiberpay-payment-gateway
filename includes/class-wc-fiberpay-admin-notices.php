@@ -112,7 +112,7 @@ class WC_Fiberpay_Admin_Notices {
 	 */
 	public function hide_notices() {
 		if ( isset( $_GET['wc-fiberpay-hide-notice'] ) && isset( $_GET['_wc_fiberpay_notice_nonce'] ) ) {
-			if ( ! wp_verify_nonce( wc_clean( wp_unslash( $_GET['_wc_fiberpay_notice_nonce'] ) ), 'wc_fiberpay_hide_notices_nonce' ) ) {
+			if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wc_fiberpay_notice_nonce'] ) ), 'wc_fiberpay_hide_notices_nonce' ) ) {
 				wp_die( esc_html__( 'Action failed. Please refresh the page and retry.', 'fiberpay-payments' ) );
 			}
 
@@ -120,7 +120,7 @@ class WC_Fiberpay_Admin_Notices {
 				wp_die( esc_html__( 'Current user can not manage woocommerce.', 'fiberpay-payments' ) );
 			}
 
-			$notice = wc_clean( wp_unslash( $_GET['wc-fiberpay-hide-notice'] ) );
+			$notice = sanitize_text_field( wp_unslash( $_GET['wc-fiberpay-hide-notice'] ) );
 
 			switch ( $notice ) {
 				case 'curl':

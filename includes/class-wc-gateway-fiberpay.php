@@ -218,8 +218,12 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 	}
 
     private function getRequestApiKey(): ?string {
+        $api_key_header = null;
+
         // Use WordPress function to get headers (server-agnostic)
-        $api_key_header = isset($_SERVER['HTTP_API_KEY']) ? $_SERVER['HTTP_API_KEY'] : '';
+        if(isset($_SERVER['HTTP_API_KEY'])) {
+            $api_key_header = sanitize_text_field(wp_unslash($_SERVER['HTTP_API_KEY']));
+        }
         fiberpay_log_debug('getRequestApiKey', ['api_key_header' => $api_key_header]);
 
         // If the header isn't found directly, try to get it from the request headers
