@@ -208,6 +208,7 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 		if(!$order) {
 			wp_die(
+				/* translators: %d: order ID */
 				esc_html(sprintf(__('Order with id %d not found', 'fiberpay-payments'), $orderId)),
 				'',
 				['response' => 400]
@@ -333,7 +334,7 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 			],
 			'secret_key' => [
 				'title' => __('Secret Key', 'fiberpay-payments'),
-				'type' => 'text',
+				'type' => 'password',
 				'description' => __('Your Fiberpay Secret Key', 'fiberpay-payments'),
 				'desc_tip' => true,
 			],
