@@ -25,15 +25,17 @@ jobs:
         run: composer install --no-dev --optimize-autoloader
 
       - name: Create distribution package
+        id: create-package
         run: |
           zip -r fiberpay-payment-gateway.zip . \
             -x@.distignore
+          echo "package_path=fiberpay-payment-gateway.zip" >> $GITHUB_OUTPUT
 
       - name: Upload distribution package
         uses: actions/upload-artifact@v4
         with:
           name: fiberpay-payment-gateway
-          path: fiberpay-payment-gateway.zip
+          path: ${{ steps.create-package.outputs.package_path }}
 
       - name: Upload to release
         if: github.event_name == 'release'
@@ -42,6 +44,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./fiberpay-payment-gateway.zip
+          asset_path: ${{ steps.create-package.outputs.package_path }}
           asset_name: fiberpay-payment-gateway.zip
           asset_content_type: application/zip 
