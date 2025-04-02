@@ -1,0 +1,47 @@
+# Version Control
+.git
+.gitignore
+.gitattributes
+.github
+.distignore
+
+# Development Tools
+.idea
+.vscode
+.editorconfig
+phpcs.xml
+phpunit.xml
+phpstan.neon
+.phpcs.xml
+.php-cs-fixer.php
+
+# Package Managers
+/vendor
+/node_modules
+composer.json
+composer.lock
+package.json
+package-lock.json
+yarn.lock
+
+# Docker
+Dockerfile
+docker-compose.yml
+.docker
+
+# Build/Test/Documentation
+/tests
+/docs
+/build
+README.md
+CHANGELOG.md
+CONTRIBUTING.md
+
+# Misc Development Files
+*.sql
+*.tar.gz
+*.zip
+.DS_Store
+*.log
+.env
+.env.* 
