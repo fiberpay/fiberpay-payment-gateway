@@ -85,8 +85,8 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 		$this->id = 'fiberpay_payments';
 		$this->icon = $this->getIconFilePath();
 		$this->has_fields = false;
-		$this->method_title = __('Fiberpay', 'fiberpay-payments');
-		$this->method_description = __('Fiberpay payment gateway', 'fiberpay-payments');
+		$this->method_title = __('Fiberpay', 'fiberpay-payment-gateway');
+		$this->method_description = __('Fiberpay payment gateway', 'fiberpay-payment-gateway');
 
 		// Define user set variables.
 		$this->title = $this->get_option('title');
@@ -208,7 +208,8 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 		if(!$order) {
 			wp_die(
-				esc_html(sprintf(__('Order with id %d not found', 'fiberpay-payments'), $orderId)),
+				/* translators: %d: order ID */
+				esc_html(sprintf(__('Order with id %d not found', 'fiberpay-payment-gateway'), $orderId)),
 				'',
 				['response' => 400]
 			);
@@ -298,49 +299,49 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 		$this->form_fields = [
 			'enabled' => [
-				'title' => __('Enable/Disable', 'fiberpay-payments'),
+				'title' => __('Enable/Disable', 'fiberpay-payment-gateway'),
 				'type' => 'checkbox',
-				'label' => __('Enable Fiberpay payments', 'fiberpay-payments'),
+				'label' => __('Enable Fiberpay payments', 'fiberpay-payment-gateway'),
 				'default' => 'no',
 			],
 			'title' => [
-				'title' => __('Title', 'fiberpay-payments'),
+				'title' => __('Title', 'fiberpay-payment-gateway'),
 				'type' => 'text',
-				'description' => __('This controls the title which the user sees during checkout.', 'fiberpay-payments'),
-				'default' => __('Fiberpay quick money transfer', 'fiberpay-payments'),
+				'description' => __('This controls the title which the user sees during checkout.', 'fiberpay-payment-gateway'),
+				'default' => __('Fiberpay quick money transfer', 'fiberpay-payment-gateway'),
 				'desc_tip' => true,
 			],
 			'description' => [
-				'title' => __('Description', 'fiberpay-payments'),
+				'title' => __('Description', 'fiberpay-payment-gateway'),
 				'type' => 'textarea',
-				'description' => __('Payment method description that the customer will see on your checkout.', 'fiberpay-payments'),
-				'default' => __('Make your payment with quick money transfer or traditional bank transfer.', 'fiberpay-payments'),
+				'description' => __('Payment method description that the customer will see on your checkout.', 'fiberpay-payment-gateway'),
+				'default' => __('Make your payment with quick money transfer or traditional bank transfer.', 'fiberpay-payment-gateway'),
 				'desc_tip' => true,
 			],
 			'is_test_env' => [
-				'title' => __('Test Environment', 'fiberpay-payments'),
+				'title' => __('Test Environment', 'fiberpay-payment-gateway'),
 				'type' => 'checkbox',
-				'label' => __('Test Environment', 'fiberpay-payments'),
-				'description' => __('Check for test environment usage', 'fiberpay-payments'),
+				'label' => __('Test Environment', 'fiberpay-payment-gateway'),
+				'description' => __('Check for test environment usage', 'fiberpay-payment-gateway'),
 				'default' => 'no',
 				'desc_tip' => true,
 			],
 			'api_key' => [
-				'title' => __('Api Key', 'fiberpay-payments'),
+				'title' => __('Api Key', 'fiberpay-payment-gateway'),
 				'type' => 'text',
-				'description' => __('Your Fiberpay Api Key', 'fiberpay-payments'),
+				'description' => __('Your Fiberpay Api Key', 'fiberpay-payment-gateway'),
 				'desc_tip' => true,
 			],
 			'secret_key' => [
-				'title' => __('Secret Key', 'fiberpay-payments'),
-				'type' => 'text',
-				'description' => __('Your Fiberpay Secret Key', 'fiberpay-payments'),
+				'title' => __('Secret Key', 'fiberpay-payment-gateway'),
+				'type' => 'password',
+				'description' => __('Your Fiberpay Secret Key', 'fiberpay-payment-gateway'),
 				'desc_tip' => true,
 			],
 			'collect_order_code' => [
-				'title' => __('Collect order code', 'fiberpay-payments'),
+				'title' => __('Collect order code', 'fiberpay-payment-gateway'),
 				'type' => 'text',
-				'description' => __('Your Fiberpay Collect Order Code', 'fiberpay-payments'),
+				'description' => __('Your Fiberpay Collect Order Code', 'fiberpay-payment-gateway'),
 				'desc_tip' => true,
 			],
 		];
@@ -368,7 +369,7 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 
 				$shopname = get_bloginfo('name');
 				/* translators: The first placeholder is a shop name, the second is a order identifier. */
-				$description = sprintf( __( '%1$s - Payment for order #%2$s', 'fiberpay-payments' ), $shopname, $order_id );
+				$description = sprintf( __( '%1$s - Payment for order #%2$s', 'fiberpay-payment-gateway' ), $shopname, $order_id );
 
 				$currency = $order->get_data()['currency'];
 				// $buyerFirstName = $order->get_billing_first_name();

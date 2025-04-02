@@ -1,0 +1,47 @@
+name: Build Distribution Package
+
+on:
+  push:
+    branches:
+      - main
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+
+      - name: Install dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Create distribution package
+        run: |
+          zip -r fiberpay-payment-gateway.zip . \
+            -x@.distignore
+
+      - name: Upload distribution package
+        uses: actions/upload-artifact@v4
+        with:
+          name: fiberpay-payment-gateway
+          path: fiberpay-payment-gateway.zip
+
+      - name: Upload to release
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./fiberpay-payment-gateway.zip
+          asset_name: fiberpay-payment-gateway.zip
+          asset_content_type: application/zip 
