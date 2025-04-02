@@ -93,13 +93,13 @@ class WC_Fiberpay_Admin_Notices {
 		if ( isset( $options['enabled'] ) && 'yes' === $options['enabled'] ) {
 			if ( empty( $show_curl_notice ) ) {
 				if (!function_exists( 'curl_init' ) ) {
-					$this->add_admin_notice( 'curl', 'notice notice-warning', __( 'Fiberpay payment plugin - cURL is not installed.', 'fiberpay-payments' ), true );
+					$this->add_admin_notice( 'curl', 'notice notice-warning', __( 'Fiberpay payment plugin - cURL is not installed.', 'fiberpay-payment-gateway' ), true );
 				}
 			}
 
             $order_data = Fiberpay_WC_Payment_Gateway::get_instance()->get_cached_collect_order();
             if ($changed_keys_notice && (empty( $order_data ) || $collect_order_code !== $order_data['data']['code'])) {
-                $this->add_admin_notice( 'keys', 'notice notice-error', sprintf( __('Connection with Fiberpay service has been detected. Check if environment, API key, secret key, Collect order code and selected environment settings are correct.', 'fiberpay-payments' ), $setting_link ), true );
+                $this->add_admin_notice( 'keys', 'notice notice-error', sprintf( __('Connection with Fiberpay service has been detected. Check if environment, API key, secret key, Collect order code and selected environment settings are correct.', 'fiberpay-payment-gateway' ), $setting_link ), true );
             }
 		}
 	}
@@ -113,11 +113,11 @@ class WC_Fiberpay_Admin_Notices {
 	public function hide_notices() {
 		if ( isset( $_GET['wc-fiberpay-hide-notice'] ) && isset( $_GET['_wc_fiberpay_notice_nonce'] ) ) {
 			if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wc_fiberpay_notice_nonce'] ) ), 'wc_fiberpay_hide_notices_nonce' ) ) {
-				wp_die( esc_html__( 'Action failed. Please refresh the page and retry.', 'fiberpay-payments' ) );
+				wp_die( esc_html__( 'Action failed. Please refresh the page and retry.', 'fiberpay-payment-gateway' ) );
 			}
 
 			if ( ! current_user_can( 'manage_woocommerce' ) ) {
-				wp_die( esc_html__( 'Current user can not manage woocommerce.', 'fiberpay-payments' ) );
+					wp_die( esc_html__( 'Current user can not manage woocommerce.', 'fiberpay-payment-gateway' ) );
 			}
 
 			$notice = sanitize_text_field( wp_unslash( $_GET['wc-fiberpay-hide-notice'] ) );

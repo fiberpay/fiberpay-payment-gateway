@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Fiberpay Payment Plugin 0.1.1\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/fiberpay-payments\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/fiberpay-payment-gateway\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
