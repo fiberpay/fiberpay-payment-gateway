@@ -1,13 +1,13 @@
 # Version Control
-.git
+.git/*
 .gitignore
 .gitattributes
-.github
+.github/*
 .distignore
 
 # Development Tools
-.idea
-.vscode
+.idea/*
+.vscode/*
 .editorconfig
 phpcs.xml
 phpunit.xml
@@ -16,8 +16,6 @@ phpstan.neon
 .php-cs-fixer.php
 
 # Package Managers
-/vendor
-/node_modules
 # composer.json
 # composer.lock
 package.json
@@ -27,12 +25,11 @@ yarn.lock
 # Docker
 Dockerfile
 docker-compose.yml
-.docker
 
 # Build/Test/Documentation
-/tests
-/docs
-/build
+tests/*
+docs/*
+build/*
 README.md
 CHANGELOG.md
 CONTRIBUTING.md
