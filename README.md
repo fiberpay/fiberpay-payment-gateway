@@ -37,6 +37,10 @@ Setting up plugin requires as follows:
 - [API documentation](https://github.com/fiberpay/api/blob/master/fiberpay.md)
 - For support queries, please [contact us](mailto:info@fiberpay.pl)
 
+## Contributors
+
+- fiberpaypl
+
 ## License
 
 This project is licensed under the GNU General Public License v2 or later - see the [LICENSE](LICENSE) file for details.
