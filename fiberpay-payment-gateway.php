@@ -147,8 +147,6 @@ function delete_order_data_transients() {
 function fiberpay_init_gateway_class() {
     fiberpay_log_debug('fiberpay_init_gateway_class called', array('source' => 'fiberpay-payment-gateway'));
     
-    load_plugin_textdomain( 'fiberpay-payment-gateway', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
-
     if ( is_admin() ) {
         require_once dirname( __FILE__ ) . '/includes/class-wc-fiberpay-admin-notices.php';
     }
