@@ -105,28 +105,36 @@ add_action('woocommerce_blocks_loaded', function() {
             true
         );
 
-        // Get payment gateway instance to access settings
-        if (class_exists('Fiberpay_WC_Payment_Gateway')) {
-            $gateway = new Fiberpay_WC_Payment_Gateway();
-            $payment_data = [
-                'title' => $gateway->get_title(),
-                'description' => $gateway->get_description(),
-                'enabled' => $gateway->enabled === 'yes',
-                'is_test_env' => $gateway->is_test_env === 'yes',
-                'gateway_id' => $gateway->id,
-            ];
-            
-            fiberpay_log_debug('Localizing payment data: ' . wp_json_encode($payment_data), array('source' => 'fiberpay-payment-gateway'));
-            
-            wp_localize_script(
-                'fiberpay-blocks',
-                'fiberpay_payments_data',
-                $payment_data
-            );
+        // Get payment gateway instance to access settings - using WC's gateway API instead of directly instantiating
+        if (class_exists('WC_Payment_Gateway') && function_exists('WC')) {
+            // Only access gateway data if WooCommerce is fully loaded
+            if (isset(WC()->payment_gateways) && WC()->payment_gateways) {
+                $gateways = WC()->payment_gateways->payment_gateways();
+                if (isset($gateways['fiberpay'])) {
+                    $gateway = $gateways['fiberpay'];
+                    $payment_data = [
+                        'title' => $gateway->get_title(),
+                        'description' => $gateway->get_description(),
+                        'enabled' => $gateway->enabled === 'yes',
+                        'is_test_env' => $gateway->is_test_env === 'yes',
+                        'gateway_id' => $gateway->id,
+                    ];
+                    
+                    fiberpay_log_debug('Localizing payment data: ' . wp_json_encode($payment_data), array('source' => 'fiberpay-payment-gateway'));
+                    
+                    wp_localize_script(
+                        'fiberpay-blocks',
+                        'fiberpay_payments_data',
+                        $payment_data
+                    );
+                }
+            } else {
+                fiberpay_log_debug('WooCommerce payment gateways not yet available', array('source' => 'fiberpay-payment-gateway'));
+            }
         }
 
         fiberpay_log_debug('Block scripts registered successfully', array('source' => 'fiberpay-payment-gateway'));
-    }, 5);
+    }, 20); // Increased priority to ensure WooCommerce is fully loaded
 });
 
 function fiberpay_add_gateway_class($gateways) {
