@@ -2,7 +2,7 @@
 Contributors: fiberpay
 Tags: payment, gateway, woocommerce, fiberpay, payments
 Requires at least: 5.0
-Tested up to: 6.7
+Tested up to: 6.8
 Requires PHP: 7.2
 Stable tag: 0.1.5
 License: GPLv2 or later
