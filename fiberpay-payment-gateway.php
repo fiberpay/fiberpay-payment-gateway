@@ -40,7 +40,7 @@ if ( ! $loader ) {
 	throw new Exception( 'vendor/autoload.php missing please run `composer install`' );
 }
 
-function fiberpay_log_debug($message, $context = []) {
+function fiberpaygw_log_debug($message, $context = []) {
     if (!defined('WP_DEBUG') || !WP_DEBUG || !function_exists('wc_get_logger')) {
         return;
     }
@@ -54,46 +54,46 @@ function fiberpay_log_debug($message, $context = []) {
 
 // Declare WooCommerce Blocks compatibility
 add_action('before_woocommerce_init', function() {
-    fiberpay_log_debug('before_woocommerce_init action fired');
+    fiberpaygw_log_debug('before_woocommerce_init action fired');
     if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
-        fiberpay_log_debug('FeaturesUtil class exists, declaring compatibility');
+        fiberpaygw_log_debug('FeaturesUtil class exists, declaring compatibility');
         \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
         \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('cart_checkout_blocks', __FILE__, true);
-        fiberpay_log_debug('Compatibility declared for custom_order_tables and cart_checkout_blocks');
+        fiberpaygw_log_debug('Compatibility declared for custom_order_tables and cart_checkout_blocks');
     } else {
-        fiberpay_log_debug('FeaturesUtil class does not exist');
+        fiberpaygw_log_debug('FeaturesUtil class does not exist');
     }
 });
 
 // Register Blocks support
 add_action('woocommerce_blocks_loaded', function() {
-    fiberpay_log_debug('woocommerce_blocks_loaded action fired', array('source' => 'fiberpay-payment-gateway'));
+    fiberpaygw_log_debug('woocommerce_blocks_loaded action fired', array('source' => 'fiberpay-payment-gateway'));
     if (!class_exists('Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType')) {
-        fiberpay_log_debug('AbstractPaymentMethodType class does not exist', array('source' => 'fiberpay-payment-gateway'), 'warning');
+        fiberpaygw_log_debug('AbstractPaymentMethodType class does not exist', array('source' => 'fiberpay-payment-gateway'), 'warning');
         return;
     }
 
-    fiberpay_log_debug('AbstractPaymentMethodType class exists, loading class-fiberpay-blocks.php', array('source' => 'fiberpay-payment-gateway'));
+    fiberpaygw_log_debug('AbstractPaymentMethodType class exists, loading class-fiberpay-blocks.php', array('source' => 'fiberpay-payment-gateway'));
     require_once dirname(__FILE__) . '/includes/blocks/class-fiberpay-blocks.php';
-    fiberpay_log_debug('Adding woocommerce_blocks_payment_method_type_registration action', array('source' => 'fiberpay-payment-gateway'));
+    fiberpaygw_log_debug('Adding woocommerce_blocks_payment_method_type_registration action', array('source' => 'fiberpay-payment-gateway'));
     
     // Register the payment method with WooCommerce Blocks
     add_action(
         'woocommerce_blocks_payment_method_type_registration',
         function(Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry) {
-            fiberpay_log_debug('woocommerce_blocks_payment_method_type_registration action fired', array('source' => 'fiberpay-payment-gateway'));
-            fiberpay_log_debug('Registering Fiberpay_Blocks_Support with payment_method_registry', array('source' => 'fiberpay-payment-gateway'));
+            fiberpaygw_log_debug('woocommerce_blocks_payment_method_type_registration action fired', array('source' => 'fiberpay-payment-gateway'));
+            fiberpaygw_log_debug('Registering Fiberpay_Blocks_Support with payment_method_registry', array('source' => 'fiberpay-payment-gateway'));
             $payment_method_registry->register(new Fiberpay_Blocks_Support());
-            fiberpay_log_debug('Fiberpay_Blocks_Support registered successfully', array('source' => 'fiberpay-payment-gateway'));
+            fiberpaygw_log_debug('Fiberpay_Blocks_Support registered successfully', array('source' => 'fiberpay-payment-gateway'));
         }
     );
 
     // Register and enqueue our block scripts
     add_action('init', function() {
-        fiberpay_log_debug('Registering block scripts', array('source' => 'fiberpay-payment-gateway'));
+        fiberpaygw_log_debug('Registering block scripts', array('source' => 'fiberpay-payment-gateway'));
         
         if (!function_exists('register_block_type')) {
-            fiberpay_log_debug('Block editor not available', array('source' => 'fiberpay-payment-gateway'), 'warning');
+            fiberpaygw_log_debug('Block editor not available', array('source' => 'fiberpay-payment-gateway'), 'warning');
             return;
         }
 
@@ -120,66 +120,66 @@ add_action('woocommerce_blocks_loaded', function() {
                         'gateway_id' => $gateway->id,
                     ];
                     
-                    fiberpay_log_debug('Localizing payment data: ' . wp_json_encode($payment_data), array('source' => 'fiberpay-payment-gateway'));
+                    fiberpaygw_log_debug('Localizing payment data: ' . wp_json_encode($payment_data), array('source' => 'fiberpay-payment-gateway'));
                     
                     wp_localize_script(
                         'fiberpay-blocks',
-                        'fiberpay_payments_data',
+                        'fiberpaygw_payments_data',
                         $payment_data
                     );
                 }
             } else {
-                fiberpay_log_debug('WooCommerce payment gateways not yet available', array('source' => 'fiberpay-payment-gateway'));
+                fiberpaygw_log_debug('WooCommerce payment gateways not yet available', array('source' => 'fiberpay-payment-gateway'));
             }
         }
 
-        fiberpay_log_debug('Block scripts registered successfully', array('source' => 'fiberpay-payment-gateway'));
+        fiberpaygw_log_debug('Block scripts registered successfully', array('source' => 'fiberpay-payment-gateway'));
     }, 20); // Increased priority to ensure WooCommerce is fully loaded
 });
 
-function fiberpay_add_gateway_class($gateways) {
-	$gateways[] = 'Fiberpay_WC_Payment_Gateway';
+function fiberpaygw_add_gateway_class($gateways) {
+	$gateways[] = 'FIBERPAYGW_Payment_Gateway';
 	return $gateways;
 }
-add_filter('woocommerce_payment_gateways', 'fiberpay_add_gateway_class');
+add_filter('woocommerce_payment_gateways', 'fiberpaygw_add_gateway_class');
 
-add_action('plugins_loaded', 'fiberpay_init_gateway_class', 11);
+add_action('plugins_loaded', 'fiberpaygw_init_gateway_class', 11);
 
-register_deactivation_hook( __FILE__, 'delete_order_data_transients' );
+register_deactivation_hook( __FILE__, 'fiberpaygw_delete_order_data_transients' );
 
-function delete_order_data_transients() {
-    delete_transient( 'wc_fiberpay_order_data_prod' );
-    delete_transient( 'wc_fiberpay_order_data_test' );
+function fiberpaygw_delete_order_data_transients() {
+    delete_transient( 'fiberpaygw_order_data_prod' );
+    delete_transient( 'fiberpaygw_order_data_test' );
 }
 
-function fiberpay_init_gateway_class() {
-    fiberpay_log_debug('fiberpay_init_gateway_class called', array('source' => 'fiberpay-payment-gateway'));
+function fiberpaygw_init_gateway_class() {
+    fiberpaygw_log_debug('fiberpaygw_init_gateway_class called', array('source' => 'fiberpay-payment-gateway'));
     
     if ( is_admin() ) {
-        require_once dirname( __FILE__ ) . '/includes/class-wc-fiberpay-admin-notices.php';
+        require_once dirname( __FILE__ ) . '/includes/class-fiberpaygw-admin-notices.php';
     }
 
     if(class_exists('WC_Payment_Gateway')) {
-        fiberpay_log_debug('WC_Payment_Gateway class exists', array('source' => 'fiberpay-payment-gateway'));
+        fiberpaygw_log_debug('WC_Payment_Gateway class exists', array('source' => 'fiberpay-payment-gateway'));
         static $plugin;
 
         if ( ! isset( $plugin ) ) {
-            fiberpay_log_debug('Loading gateway class', array('source' => 'fiberpay-payment-gateway'));
-            include_once plugin_dir_path(__FILE__) . '/includes/class-wc-gateway-fiberpay.php';
-            fiberpay_log_debug('Gateway class loaded', array('source' => 'fiberpay-payment-gateway'));
+            fiberpaygw_log_debug('Loading gateway class', array('source' => 'fiberpay-payment-gateway'));
+            include_once plugin_dir_path(__FILE__) . '/includes/class-fiberpaygw-gateway.php';
+            fiberpaygw_log_debug('Gateway class loaded', array('source' => 'fiberpay-payment-gateway'));
         } else {
-            fiberpay_log_debug('Plugin already set', array('source' => 'fiberpay-payment-gateway'));
+            fiberpaygw_log_debug('Plugin already set', array('source' => 'fiberpay-payment-gateway'));
         }
 
         return $plugin;
     } else {
-        fiberpay_log_debug('WC_Payment_Gateway class does not exist', array('source' => 'fiberpay-payment-gateway'), 'warning');
+        fiberpaygw_log_debug('WC_Payment_Gateway class does not exist', array('source' => 'fiberpay-payment-gateway'), 'warning');
     }
 }
 
 // Make sure the gateway class is loaded before blocks attempt to use it
 add_action('init', function() {
-    fiberpay_log_debug('init action - ensuring gateway class is loaded', array('source' => 'fiberpay-payment-gateway'));
-    fiberpay_init_gateway_class();
-    fiberpay_log_debug('Gateway initialization complete', array('source' => 'fiberpay-payment-gateway'));
+    fiberpaygw_log_debug('init action - ensuring gateway class is loaded', array('source' => 'fiberpay-payment-gateway'));
+    fiberpaygw_init_gateway_class();
+    fiberpaygw_log_debug('Gateway initialization complete', array('source' => 'fiberpay-payment-gateway'));
 }, 5);
