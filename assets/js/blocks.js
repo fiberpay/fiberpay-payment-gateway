@@ -3,7 +3,6 @@ const { getSetting } = wc.wcSettings;
 const { createElement, useEffect, useState, useCallback, memo } = window.wp.element;
 
 const settings = getSetting('fiberpay_payments_data', {});
-console.log('v3');
 
 const FiberpayComponent = (props) => {
     const { eventRegistration, emitResponse } = props;
