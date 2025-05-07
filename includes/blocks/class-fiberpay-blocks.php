@@ -24,7 +24,7 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
             $this->gateway = $payment_gateways['fiberpay_payments'];
         } else {
             fiberpaygw_log_debug('Fiberpay_Blocks_Support: Gateway not found in WC payment gateways, creating new instance');
-            $this->gateway = new Fiberpay_WC_Payment_Gateway();
+            $this->gateway = new FIBERPAYGW_Payment_Gateway();
         }
         
         fiberpaygw_log_debug('Fiberpay_Blocks_Support: Gateway instance created, ID: ' . $this->gateway->id);

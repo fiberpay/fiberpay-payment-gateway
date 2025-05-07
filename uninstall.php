@@ -15,7 +15,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
  */
 if ( defined( 'WC_REMOVE_ALL_DATA' ) && true === WC_REMOVE_ALL_DATA ) {
 	// Delete options.
-	delete_option( 'wc_fiberpay_show_keys_notice' );
-	delete_option( 'wc_fiberpay_payments_show_changed_keys_notice' );
+	delete_option( 'fiberpaygw_show_keys_notice' );
+	delete_option( 'fiberpaygw_payments_show_changed_keys_notice' );
 	delete_option( 'woocommerce_fiberpay_payments_settings' );
 }
