@@ -6,7 +6,7 @@ use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodTyp
  */
 class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
     /**
-     * @var WC_Gateway_Fiberpay
+     * @var FIBERPAYGW_Payment_Gateway
      */
     private $gateway;
     
@@ -14,21 +14,21 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
      * Constructor
      */
     public function __construct() {
-        fiberpay_log_debug('Fiberpay_Blocks_Support: Constructor called');
+        fiberpaygw_log_debug('Fiberpay_Blocks_Support: Constructor called');
         
         // Get WooCommerce's payment gateways to make sure our gateway is properly initialized
         $payment_gateways = WC()->payment_gateways()->payment_gateways();
         
         if (isset($payment_gateways['fiberpay_payments'])) {
-            fiberpay_log_debug('Fiberpay_Blocks_Support: Found gateway in WC payment gateways');
+            fiberpaygw_log_debug('Fiberpay_Blocks_Support: Found gateway in WC payment gateways');
             $this->gateway = $payment_gateways['fiberpay_payments'];
         } else {
-            fiberpay_log_debug('Fiberpay_Blocks_Support: Gateway not found in WC payment gateways, creating new instance');
-            $this->gateway = new Fiberpay_WC_Payment_Gateway();
+            fiberpaygw_log_debug('Fiberpay_Blocks_Support: Gateway not found in WC payment gateways, creating new instance');
+            $this->gateway = new FIBERPAYGW_Payment_Gateway();
         }
         
-        fiberpay_log_debug('Fiberpay_Blocks_Support: Gateway instance created, ID: ' . $this->gateway->id);
-        fiberpay_log_debug('Fiberpay_Blocks_Support: Gateway enabled: ' . ($this->gateway->enabled === 'yes' ? 'yes' : 'no'));
+        fiberpaygw_log_debug('Fiberpay_Blocks_Support: Gateway instance created, ID: ' . $this->gateway->id);
+        fiberpaygw_log_debug('Fiberpay_Blocks_Support: Gateway enabled: ' . ($this->gateway->enabled === 'yes' ? 'yes' : 'no'));
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_payment_scripts']);
     }
@@ -40,7 +40,7 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
      */
     public function is_active() {
         $active = $this->gateway->enabled === 'yes';
-        fiberpay_log_debug('Fiberpay_Blocks_Support: is_active called, returning: ' . ($active ? 'true' : 'false'));
+        fiberpaygw_log_debug('Fiberpay_Blocks_Support: is_active called, returning: ' . ($active ? 'true' : 'false'));
         return $active;
     }
 
@@ -50,7 +50,7 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
      * @return array
      */
     public function get_payment_method_script_handles() {
-        fiberpay_log_debug('Fiberpay_Blocks_Support: get_payment_method_script_handles called');
+        fiberpaygw_log_debug('Fiberpay_Blocks_Support: get_payment_method_script_handles called');
         $script_path = 'assets/js/blocks.js';
         $script_asset_path = dirname(dirname(dirname(__FILE__))) . '/assets/js/blocks.asset.php';
         $script_asset = file_exists($script_asset_path)
@@ -77,7 +77,7 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
             );
         }
 
-        fiberpay_log_debug('Fiberpay_Blocks_Support: Script registered');
+        fiberpaygw_log_debug('Fiberpay_Blocks_Support: Script registered');
         return ['fiberpay-blocks'];
     }
 
@@ -87,7 +87,7 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
      * @return array
      */
     public function get_payment_method_data() {
-        fiberpay_log_debug('Fiberpay_Blocks_Support: get_payment_method_data called');
+        fiberpaygw_log_debug('Fiberpay_Blocks_Support: get_payment_method_data called');
         $data = [
             'title' => $this->gateway->get_title(),
             'description' => $this->gateway->get_description(),
@@ -97,7 +97,7 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
             'is_test_env' => $this->gateway->is_test_env === 'yes',
             'gateway_id' => $this->gateway->id,
         ];
-        fiberpay_log_debug('Fiberpay_Blocks_Support: Returning data: ' . wp_json_encode($data));
+        fiberpaygw_log_debug('Fiberpay_Blocks_Support: Returning data: ' . wp_json_encode($data));
         return $data;
     }
 
@@ -107,7 +107,7 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
      * @return array
      */
     public function get_supported_features() {
-        fiberpay_log_debug('Fiberpay_Blocks_Support: get_supported_features called');
+        fiberpaygw_log_debug('Fiberpay_Blocks_Support: get_supported_features called');
         return [
             'products'
         ];
@@ -117,7 +117,7 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
      * Returns the name of the payment method.
      */
     public function get_name() {
-        fiberpay_log_debug('Fiberpay_Blocks_Support: get_name called, returning: ' . $this->gateway->id);
+        fiberpaygw_log_debug('Fiberpay_Blocks_Support: get_name called, returning: ' . $this->gateway->id);
         return $this->gateway->id;
     }
 
@@ -129,8 +129,7 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
             return;
         }
 
-        // Verify nonce
-        if (!isset($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'woocommerce-cart')) {
+        if (isset($_GET['_wpnonce']) && !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'woocommerce-cart')) {
             return;
         }
 

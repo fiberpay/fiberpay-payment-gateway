@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 4.1.0
  */
-class WC_Fiberpay_Admin_Notices {
+class FIBERPAYGW_Admin_Notices {
 	/**
 	 * Notices (array)
 	 *
@@ -58,7 +58,7 @@ class WC_Fiberpay_Admin_Notices {
 
 			if ( $notice['dismissible'] ) {
 				?>
-<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'wc-fiberpay-hide-notice', $notice_key ), 'wc_fiberpay_hide_notices_nonce', '_wc_fiberpay_notice_nonce' ) ); ?>"
+<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'fiberpaygw-hide-notice', $notice_key ), 'fiberpaygw_hide_notices_nonce', '_fiberpaygw_notice_nonce' ) ); ?>"
   class="woocommerce-message-close notice-dismiss"
   style="position:relative;float:right;padding:9px 0px 9px 9px 9px;text-decoration:none;"></a>
 <?php
@@ -86,7 +86,7 @@ class WC_Fiberpay_Admin_Notices {
 	 * @version 4.0.0
 	 */
 	public function check_environment() {
-		$changed_keys_notice = get_option( 'wc_fiberpay_payments_show_changed_keys_notice' );
+		$changed_keys_notice = get_option( 'fiberpaygw_payments_show_changed_keys_notice' );
 		$options = get_option( 'woocommerce_fiberpay_payments_settings' );
         $collect_order_code = isset( $options['collect_order_code'] ) ? $options['collect_order_code'] : '';
 
@@ -97,7 +97,7 @@ class WC_Fiberpay_Admin_Notices {
 				}
 			}
 
-            $order_data = Fiberpay_WC_Payment_Gateway::get_instance()->get_cached_collect_order();
+            $order_data = FIBERPAYGW_Payment_Gateway::get_instance()->get_cached_collect_order();
             if ($changed_keys_notice && (empty( $order_data ) || $collect_order_code !== $order_data['data']['code'])) {
                 $this->add_admin_notice( 'keys', 'notice notice-error', sprintf( __('Connection with Fiberpay service has been detected. Check if environment, API key, secret key, Collect order code and selected environment settings are correct.', 'fiberpay-payment-gateway' ), $setting_link ), true );
             }
@@ -111,8 +111,8 @@ class WC_Fiberpay_Admin_Notices {
 	 * @version 4.0.0
 	 */
 	public function hide_notices() {
-		if ( isset( $_GET['wc-fiberpay-hide-notice'] ) && isset( $_GET['_wc_fiberpay_notice_nonce'] ) ) {
-			if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wc_fiberpay_notice_nonce'] ) ), 'wc_fiberpay_hide_notices_nonce' ) ) {
+		if ( isset( $_GET['fiberpaygw-hide-notice'] ) && isset( $_GET['_fiberpaygw_notice_nonce'] ) ) {
+			if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_fiberpaygw_notice_nonce'] ) ), 'fiberpaygw_hide_notices_nonce' ) ) {
 				wp_die( esc_html__( 'Action failed. Please refresh the page and retry.', 'fiberpay-payment-gateway' ) );
 			}
 
@@ -120,14 +120,14 @@ class WC_Fiberpay_Admin_Notices {
 					wp_die( esc_html__( 'Current user can not manage woocommerce.', 'fiberpay-payment-gateway' ) );
 			}
 
-			$notice = sanitize_text_field( wp_unslash( $_GET['wc-fiberpay-hide-notice'] ) );
+			$notice = sanitize_text_field( wp_unslash( $_GET['fiberpaygw-hide-notice'] ) );
 
 			switch ( $notice ) {
 				case 'curl':
-					update_option( 'wc_fiberpay_show_curl_notice', 'no' );
+					update_option( 'fiberpaygw_show_curl_notice', 'no' );
 					break;
 				case 'keys':
-					update_option( 'wc_fiberpay_show_keys_notice', 'no' );
+					update_option( 'fiberpaygw_show_keys_notice', 'no' );
 					break;
 				default:
 					break;
@@ -136,4 +136,4 @@ class WC_Fiberpay_Admin_Notices {
 	}
 }
 
-new WC_Fiberpay_Admin_Notices();
+new FIBERPAYGW_Admin_Notices();

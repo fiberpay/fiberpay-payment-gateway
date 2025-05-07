@@ -1,18 +1,20 @@
 const { registerPaymentMethod } = wc.wcBlocksRegistry;
 const { getSetting } = wc.wcSettings;
-const { createElement } = window.wp.element;
-
-console.log('Fiberpay blocks.js loaded');
+const { createElement, useEffect, useState, useCallback, memo } = window.wp.element;
 
 const settings = getSetting('fiberpay_payments_data', {});
-console.log('Fiberpay settings loaded:', settings);
 
 const FiberpayComponent = (props) => {
-    console.log('Fiberpay component rendering with props:', props);
     const { eventRegistration, emitResponse } = props;
-    const { onPaymentSetup } = eventRegistration;
 
-    onPaymentSetup(() => {
+    // Log all props to check if their identity changes often
+    console.log('Fiberpay component props:', props);
+
+    // Local state to track registration
+    const [registered, setRegistered] = useState(false);
+
+    // Callback to register payment setup
+    const paymentSetupHandler = useCallback(() => {
         console.log('Fiberpay onPaymentSetup triggered');
         return {
             type: emitResponse.responseTypes.SUCCESS,
@@ -22,14 +24,32 @@ const FiberpayComponent = (props) => {
                 }
             }
         };
-    });
+    }, [emitResponse]);
 
-    return createElement('div', { className: 'wc-block-components-payment-method-label' },
+    useEffect(() => {
+        if (!registered) {
+            console.log('Fiberpay registering payment setup');
+            const unregister = eventRegistration.onPaymentSetup(paymentSetupHandler);
+            setRegistered(true);
+
+            return () => {
+                if (typeof unregister === 'function') {
+                    console.log('Fiberpay unregistering payment setup');
+                    unregister();
+                }
+            };
+        }
+    }, [registered, eventRegistration, paymentSetupHandler]);
+
+    return createElement(
+        'div',
+        { className: 'wc-block-components-payment-method-label' },
         settings.title || 'Fiberpay',
-        settings.description && createElement('div', {
-            className: 'wc-block-components-payment-method-description',
-            dangerouslySetInnerHTML: { __html: settings.description }
-        })
+        settings.description &&
+            createElement('div', {
+                className: 'wc-block-components-payment-method-description',
+                dangerouslySetInnerHTML: { __html: settings.description }
+            })
     );
 };
 
