@@ -225,11 +225,11 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
         if(isset($_SERVER['HTTP_API_KEY'])) {
             $api_key_header = sanitize_text_field(wp_unslash($_SERVER['HTTP_API_KEY']));
         }
-        fiberpay_log_debug('getRequestApiKey', ['api_key_header' => $api_key_header]);
+        fiberpaygw_log_debug('getRequestApiKey', ['api_key_header' => $api_key_header]);
 
         // If the header isn't found directly, try to get it from the request headers
         if (empty($api_key_header) && function_exists('getallheaders')) {
-            fiberpay_log_debug('getallheaders', getallheaders());
+            fiberpaygw_log_debug('getallheaders', getallheaders());
             $headers = getallheaders();
             $api_key_header = isset($headers['API-Key']) ? $headers['API-Key'] : '';
         }
@@ -241,12 +241,12 @@ class Fiberpay_WC_Payment_Gateway extends WC_Payment_Gateway {
 	{
         $apiKeyHeader = $this->getRequestApiKey();
         if (empty($apiKeyHeader)) {
-            fiberpay_log_debug('api key header not found');
+            fiberpaygw_log_debug('api key header not found');
             return false;
         }
 
         if(empty($this->api_key)) {
-            fiberpay_log_debug('api key is not configured');
+            fiberpaygw_log_debug('api key is not configured');
             return false;
         }
 		return $apiKeyHeader === $this->api_key;
