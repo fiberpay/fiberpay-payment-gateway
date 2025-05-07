@@ -6,7 +6,7 @@ use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodTyp
  */
 class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
     /**
-     * @var WC_Gateway_Fiberpay
+     * @var FIBERPAYGW_Payment_Gateway
      */
     private $gateway;
     
@@ -129,8 +129,7 @@ class Fiberpay_Blocks_Support extends AbstractPaymentMethodType {
             return;
         }
 
-        // Verify nonce
-        if (!isset($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'woocommerce-cart')) {
+        if (isset($_GET['_wpnonce']) && !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'woocommerce-cart')) {
             return;
         }
 
