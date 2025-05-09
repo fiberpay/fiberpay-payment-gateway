@@ -11,7 +11,7 @@ use Firebase\JWT\SignatureInvalidException;
 *
 * @class FIBERPAYGW_Payment_Gateway
 * @extends WC_Payment_Gateway
-* @version 0.1.5
+* @version 0.1.6
 * @package Fiberpay\Payment
 */
 class FIBERPAYGW_Payment_Gateway extends WC_Payment_Gateway {
@@ -215,12 +215,11 @@ class FIBERPAYGW_Payment_Gateway extends WC_Payment_Gateway {
         if(isset($_SERVER['HTTP_API_KEY'])) {
             $api_key_header = sanitize_text_field(wp_unslash($_SERVER['HTTP_API_KEY']));
         }
-        fiberpaygw_log_debug('getRequestApiKey', ['api_key_header' => $api_key_header]);
+        fiberpaygw_log_debug('getRequestApiKey', ['api_key_header_exists' => !empty($api_key_header)]);
 
-        // If the header isn't found directly, try to get it from the request headers
         if (empty($api_key_header) && function_exists('getallheaders')) {
-            fiberpaygw_log_debug('getallheaders', getallheaders());
             $headers = getallheaders();
+            fiberpaygw_log_debug('getallheaders', ['API-Key' => isset($headers['API-Key']) ? 'exists' : 'not found']);
             $api_key_header = isset($headers['API-Key']) ? $headers['API-Key'] : '';
         }
 
