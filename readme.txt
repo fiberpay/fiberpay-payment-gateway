@@ -4,7 +4,7 @@ Tags: payment gateway, woocommerce, fiberpay, payments, polish payments, blik, p
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.2
-Stable tag: 0.1.6
+Stable tag: 0.1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,7 +86,7 @@ Yes, the plugin includes a test environment option. We strongly recommend testin
 
 == Changelog ==
 
-= 0.1.6 =
+= 0.1.7 =
 * Enhanced documentation with detailed Polish payment methods information
 * Improved debug logging throughout the plugin
 * Added comprehensive SEO-focused content
