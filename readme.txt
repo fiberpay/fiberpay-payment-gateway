@@ -92,6 +92,11 @@ Yes, the plugin includes a test environment option. We strongly recommend testin
 * Updated technical documentation
 
 = 0.1.7 =
+* Improved and streamlined CI/CD workflow
+* Added workflow for automatic deployment to WordPress SVN
+* Updated technical documentation
+
+= 0.1.6 =
 * Enhanced documentation with detailed Polish payment methods information
 * Improved debug logging throughout the plugin
 * Added comprehensive SEO-focused content
