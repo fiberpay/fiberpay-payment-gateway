@@ -44,14 +44,14 @@ jobs:
 
       - name: Check if tag exists
         run: |
-          if svn ls https://plugins.svn.wordpress.org/fiberpay-payment-gateway/tags/${{ steps.extract_tag.outputs.tag }} --username fiberpaypl --password ${{ secrets.WORDPRESS_SVN }}; then
+          if svn ls https://plugins.svn.wordpress.org/fiberpay-payment-gateway/tags/${{ steps.extract_tag.outputs.tag }} --username ${{ secrets.WORDPRESS_SVN_USERNAME }} --password ${{ secrets.WORDPRESS_SVN }}; then
             echo "Tag ${{ steps.extract_tag.outputs.tag }} already exists in SVN"
             exit 1
           fi
 
       - name: Checkout WordPress SVN repository
         run: |
-          svn co https://plugins.svn.wordpress.org/fiberpay-payment-gateway svn --username fiberpaypl --password ${{ secrets.WORDPRESS_SVN }} --no-auth-cache
+          svn co https://plugins.svn.wordpress.org/fiberpay-payment-gateway svn --username ${{ secrets.WORDPRESS_SVN_USERNAME }} --password ${{ secrets.WORDPRESS_SVN }} --no-auth-cache
 
       - name: Prepare SVN directories
         run: |
@@ -91,7 +91,7 @@ jobs:
           cd svn
           set -e
           svn add --force trunk/* tags/${{ steps.extract_tag.outputs.tag }}/*
-          svn commit -m "Release ${{ steps.extract_tag.outputs.tag }}" --username fiberpaypl --password ${{ secrets.WORDPRESS_SVN }} --no-auth-cache
+          svn commit -m "Release ${{ steps.extract_tag.outputs.tag }}" --username ${{ secrets.WORDPRESS_SVN_USERNAME }} --password ${{ secrets.WORDPRESS_SVN }} --no-auth-cache
           if [ $? -ne 0 ]; then
             echo "SVN commit failed"
             exit 1
