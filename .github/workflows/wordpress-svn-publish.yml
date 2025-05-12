@@ -1,0 +1,88 @@
+name: Deploy to WordPress SVN
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+
+      - name: Install dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Create distribution package
+        run: |
+          if [ ! -f .distignore ]; then
+            echo "Warning: .distignore file not found, including all files"
+            zip -r fiberpay-payment-gateway.zip .
+          else
+            zip -r fiberpay-payment-gateway.zip . -x@.distignore
+          fi
+
+      - name: Extract release tag
+        id: extract_tag
+        run: echo "tag=${GITHUB_REF#refs/tags/}" | sed 's/^v//' >> $GITHUB_OUTPUT
+
+      - name: Install SVN
+        run: sudo apt-get update && sudo apt-get install -y subversion
+
+      - name: Check if tag exists
+        run: |
+          if svn ls https://plugins.svn.wordpress.org/fiberpay-payment-gateway/tags/${{ steps.extract_tag.outputs.tag }} --username fiberpaypl --password ${{ secrets.WORDPRESS_SVN }}; then
+            echo "Tag ${{ steps.extract_tag.outputs.tag }} already exists in SVN"
+            exit 1
+          fi
+
+      - name: Checkout WordPress SVN repository
+        run: |
+          svn co https://plugins.svn.wordpress.org/fiberpay-payment-gateway svn --username fiberpaypl --password ${{ secrets.WORDPRESS_SVN }} --no-auth-cache
+
+      - name: Prepare SVN directories
+        run: |
+          cd svn
+          mkdir -p trunk tags/${{ steps.extract_tag.outputs.tag }}
+          rm -rf trunk/*
+        working-directory: ./
+
+      - name: Unzip and copy plugin files to SVN trunk
+        run: |
+          unzip fiberpay-payment-gateway.zip -d svn/trunk
+        working-directory: ./
+
+      - name: Clean up ZIP file
+        run: rm fiberpay-payment-gateway.zip
+        working-directory: ./
+
+      - name: Copy trunk to SVN tag
+        run: |
+          cp -r svn/trunk/* svn/tags/${{ steps.extract_tag.outputs.tag }}/
+        working-directory: ./
+
+      - name: Check SVN status
+        run: |
+          cd svn
+          svn status
+        working-directory: ./
+
+      - name: Commit to SVN
+        run: |
+          cd svn
+          set -e
+          svn add --force trunk/* tags/${{ steps.extract_tag.outputs.tag }}/*
+          svn commit -m "Release ${{ steps.extract_tag.outputs.tag }}" --username fiberpaypl --password ${{ secrets.WORDPRESS_SVN }} --no-auth-cache --verbose
+          if [ $? -ne 0 ]; then
+            echo "SVN commit failed"
+            exit 1
+          fi
+        working-directory: ./
