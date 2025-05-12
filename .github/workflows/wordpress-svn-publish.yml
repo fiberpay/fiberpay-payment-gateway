@@ -30,6 +30,10 @@ jobs:
             zip -r fiberpay-payment-gateway.zip . -x@.distignore
           fi
 
+      - name: Debug ZIP contents
+        run: unzip -l fiberpay-payment-gateway.zip
+        working-directory: ./
+
       - name: Extract release tag
         id: extract_tag
         run: echo "tag=${GITHUB_REF#refs/tags/}" | sed 's/^v//' >> $GITHUB_OUTPUT
@@ -53,6 +57,12 @@ jobs:
           cd svn
           mkdir -p trunk tags/${{ steps.extract_tag.outputs.tag }}
           rm -rf trunk/*
+          svn add tags/${{ steps.extract_tag.outputs.tag }} --force
+        working-directory: ./
+
+      - name: Debug directory structure
+        run: |
+          ls -R svn
         working-directory: ./
 
       - name: Unzip and copy plugin files to SVN trunk
