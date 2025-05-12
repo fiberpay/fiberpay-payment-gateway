@@ -1,10 +1,10 @@
 === Fiberpay Payment Gateway ===
 Contributors: fiberpay
-Tags: payment gateway, woocommerce, fiberpay, payments, polish payments, blik, przelewy, poland, polish, payment processor
+Tags: payment gateway, woocommerce, fiberpay, blik, paybylink
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.2
-Stable tag: 0.1.7
+Stable tag: 0.1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Take instant payments on your WooCommerce store using Fiberpay payment gateway w
 
 == Description ==
 
-Fiberpay payment gateway plugin for WooCommerce allows you to accept payments directly on your store through [Fiberpay's](https://fiberpay.pl) secure payment processing platform. This plugin enables Polish payment methods for your WordPress online store, providing your customers with familiar and trusted payment options.
+Fiberpay payment gateway plugin for WooCommerce allows you to accept payments directly on your store through [Fiberpay Payment Gateway](https://fiberpay.pl) secure payment processing platform. This plugin enables Polish payment methods for your WordPress online store, providing your customers with familiar and trusted payment options.
 
 = Available Payment Methods =
 * **Quick online transfers** from all major Polish banks (przelewy natychmiastowe)
@@ -39,7 +39,7 @@ Fiberpay payment gateway plugin for WooCommerce allows you to accept payments di
 = Why Choose Fiberpay? =
 * **Polish Market Specialist**: Payment methods optimized for Polish customers
 * **Quick Setup**: Easy integration with your WooCommerce store
-* **Competitive Fees**: Visit [Fiberpay's website](https://fiberpay.pl) for current pricing
+* **Competitive Fees**: Visit [Fiberpay website](https://fiberpay.pl) for current pricing
 * **Reliable Service**: Secure and stable payment processing
 * **Excellent Support**: Dedicated customer service team
 
@@ -86,6 +86,11 @@ Yes, the plugin includes a test environment option. We strongly recommend testin
 
 == Changelog ==
 
+= 0.1.8 =
+* Improved and streamlined CI/CD workflow
+* Added workflow for automatic deployment to WordPress SVN
+* Updated technical documentation
+
 = 0.1.7 =
 * Enhanced documentation with detailed Polish payment methods information
 * Improved debug logging throughout the plugin
@@ -100,15 +105,6 @@ Yes, the plugin includes a test environment option. We strongly recommend testin
 = 0.1.1 =
 * Added support for WooCommerce Blocks
 * Improved error logging
-* Bug fixes and performance improvements
-
-= 0.1.0 =
-* Initial release
-
-== Upgrade Notice ==
-
-= 0.1.5 =
-This version adds support for WooCommerce 8.5 and includes improved HPOS compatibility. Upgrade recommended for all users.
 
 == Third-party Libraries ==
 
