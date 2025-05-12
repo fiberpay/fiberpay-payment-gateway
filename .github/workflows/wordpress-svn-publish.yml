@@ -23,6 +23,7 @@ jobs:
 
       - name: Create distribution package
         run: |
+          # Ensure .distignore excludes unnecessary files like vendor/, composer.json, composer.lock
           if [ ! -f .distignore ]; then
             echo "Warning: .distignore file not found, including all files"
             zip -r fiberpay-payment-gateway.zip .
@@ -90,7 +91,7 @@ jobs:
           cd svn
           set -e
           svn add --force trunk/* tags/${{ steps.extract_tag.outputs.tag }}/*
-          svn commit -m "Release ${{ steps.extract_tag.outputs.tag }}" --username fiberpaypl --password ${{ secrets.WORDPRESS_SVN }} --no-auth-cache --verbose
+          svn commit -m "Release ${{ steps.extract_tag.outputs.tag }}" --username fiberpaypl --password ${{ secrets.WORDPRESS_SVN }} --no-auth-cache
           if [ $? -ne 0 ]; then
             echo "SVN commit failed"
             exit 1
