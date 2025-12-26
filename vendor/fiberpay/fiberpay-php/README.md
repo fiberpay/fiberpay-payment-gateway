@@ -1,1 +1,0 @@
-# fiberpay-php
