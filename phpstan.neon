@@ -1,0 +1,49 @@
+parameters:
+    level: 5
+    paths:
+        - includes/
+        - fiberpay-payment-gateway.php
+    excludePaths:
+        - vendor/
+        - tests/ (?)
+    bootstrapFiles:
+        - phpstan-stubs.php
+        - phpstan-stubs-wc-blocks.php
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # WordPress core functions
+        - '#Function .+ not found#'
+        
+        # WordPress/WooCommerce classes and types
+        - '#Class .+ not found#'
+        - '#does not extend any class#'
+        - '#unknown class#'
+        - '#invalid type#'
+        - '#Undefined type#'
+        
+        # WooCommerce parent class properties and methods
+        - '#Access to an undefined property FIBERPAYGW_Payment_Gateway::\$#'
+        - '#Call to an undefined method FIBERPAYGW_Payment_Gateway::#'
+        - '#Access to an undefined property Fiberpay_Blocks_Support::\$#'
+        - '#Call to an undefined method Fiberpay_Blocks_Support::#'
+        
+        # WooCommerce gateway parent class properties
+        - '#Undefined property.*::\$id#'
+        - '#Undefined property.*::\$icon#'
+        - '#Undefined property.*::\$enabled#'
+        - '#Undefined property.*::\$title#'
+        - '#Undefined property.*::\$description#'
+        - '#Undefined property.*::\$method_title#'
+        - '#Undefined property.*::\$method_description#'
+        - '#Undefined property.*::\$has_fields#'
+        - '#Undefined property.*::\$form_fields#'
+        - '#Undefined method.*::get_option\(\)#'
+        - '#Undefined method.*::get_title\(\)#'
+        - '#Undefined method.*::get_description\(\)#'
+        
+        # API response objects
+        - '#Access to an undefined property object::#'
+        
+        # Constants
+        - '#Constant .+ not found#'

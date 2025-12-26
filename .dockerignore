@@ -1,0 +1,13 @@
+.git
+.gitignore
+.github
+node_modules
+npm-debug.log
+.DS_Store
+*.zip
+
+# Opcjonalnie: logi/artefakty
+*.log
+
+# Jeśli kiedyś pojawią się build-artefakty JS
+assets/js/*.map

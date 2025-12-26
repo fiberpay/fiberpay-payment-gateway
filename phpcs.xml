@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<ruleset name="Fiberpay Payment Gateway">
+    <description>WordPress and WooCommerce coding standards for Fiberpay Payment Gateway</description>
+    
+    <!-- Files to check -->
+    <file>.</file>
+    
+    <!-- Exclude vendor directory and non-PHP files -->
+    <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>node_modules/*</exclude-pattern>
+    <exclude-pattern>phpstan-stubs*.php</exclude-pattern>
+    <exclude-pattern>*.js</exclude-pattern>
+    <exclude-pattern>*.css</exclude-pattern>
+    
+    <!-- Exclude WooCommerce-generated asset files (blocks.asset.php naming is WC convention) -->
+    <exclude-pattern>assets/js/blocks.asset.php</exclude-pattern>
+    
+    <!-- WordPress Coding Standards - use WordPress-Core for basic compliance -->
+    <rule ref="WordPress-Core">
+        <!-- Exclude specific problematic sniffs -->
+        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing"/>
+    </rule>
+    
+    <!-- WordPress Extra rules for best practices -->
+    <rule ref="WordPress-Extra">
+        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing"/>
+    </rule>
+    
+    <!-- Register WooCommerce custom capabilities -->
+    <rule ref="WordPress.WP.Capabilities">
+        <properties>
+            <property name="custom_capabilities" type="array">
+                <element value="manage_woocommerce"/>
+            </property>
+        </properties>
+    </rule>
+    
+    <!-- Line length limit (warning only, not blocking) -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="0"/>
+        </properties>
+    </rule>
+    
+    <!-- Exclude file naming rules for existing files (would require renaming) -->
+    <rule ref="WordPress.Files.FileName">
+        <exclude-pattern>includes/class-fiberpaygw-gateway.php</exclude-pattern>
+        <exclude-pattern>includes/blocks/class-fiberpay-blocks.php</exclude-pattern>
+    </rule>
+</ruleset>

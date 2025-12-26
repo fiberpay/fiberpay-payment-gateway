@@ -14,7 +14,7 @@ class FIBERPAYGW_Admin_Notices {
 	 *
 	 * @var array
 	 */
-	public $notices = [];
+	public $notices = array();
 
 	/**
 	 * Constructor
@@ -22,8 +22,8 @@ class FIBERPAYGW_Admin_Notices {
 	 * @since 4.1.0
 	 */
 	public function __construct() {
-		add_action( 'admin_notices', [ $this, 'admin_notices' ] );
-		add_action( 'wp_loaded', [ $this, 'hide_notices' ] );
+		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+		add_action( 'wp_loaded', array( $this, 'hide_notices' ) );
 	}
 
 	/**
@@ -33,11 +33,11 @@ class FIBERPAYGW_Admin_Notices {
 	 * @version 4.0.0
 	 */
 	public function add_admin_notice( $slug, $class, $message, $dismissible = false ) {
-		$this->notices[ $slug ] = [
+		$this->notices[ $slug ] = array(
 			'class'       => $class,
 			'message'     => $message,
 			'dismissible' => $dismissible,
-		];
+		);
 	}
 
 	/**
@@ -59,20 +59,20 @@ class FIBERPAYGW_Admin_Notices {
 			if ( $notice['dismissible'] ) {
 				?>
 <a href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'fiberpaygw-hide-notice', $notice_key ), 'fiberpaygw_hide_notices_nonce', '_fiberpaygw_notice_nonce' ) ); ?>"
-  class="woocommerce-message-close notice-dismiss"
-  style="position:relative;float:right;padding:9px 0px 9px 9px 9px;text-decoration:none;"></a>
-<?php
+	class="woocommerce-message-close notice-dismiss"
+	style="position:relative;float:right;padding:9px 0px 9px 9px 9px;text-decoration:none;"></a>
+				<?php
 			}
 
 			echo '<p>';
 			echo wp_kses(
 				$notice['message'],
-				[
-					'a' => [
-						'href'   => [],
-						'target' => [],
-					],
-				]
+				array(
+					'a' => array(
+						'href'   => array(),
+						'target' => array(),
+					),
+				)
 			);
 			echo '</p></div>';
 		}
@@ -87,20 +87,21 @@ class FIBERPAYGW_Admin_Notices {
 	 */
 	public function check_environment() {
 		$changed_keys_notice = get_option( 'fiberpaygw_payments_show_changed_keys_notice' );
-		$options = get_option( 'woocommerce_fiberpay_payments_settings' );
-        $collect_order_code = isset( $options['collect_order_code'] ) ? $options['collect_order_code'] : '';
+		$options             = get_option( 'woocommerce_fiberpay_payments_settings' );
+		$collect_order_code  = isset( $options['collect_order_code'] ) ? $options['collect_order_code'] : '';
 
 		if ( isset( $options['enabled'] ) && 'yes' === $options['enabled'] ) {
-			if ( empty( $show_curl_notice ) ) {
-				if (!function_exists( 'curl_init' ) ) {
+			$show_curl_notice = get_option( 'fiberpaygw_show_curl_notice', 'yes' );
+			if ( 'yes' === $show_curl_notice ) {
+				if ( ! function_exists( 'curl_init' ) ) {
 					$this->add_admin_notice( 'curl', 'notice notice-warning', __( 'Fiberpay payment plugin - cURL is not installed.', 'fiberpay-payment-gateway' ), true );
 				}
 			}
 
-            $order_data = FIBERPAYGW_Payment_Gateway::get_instance()->get_cached_collect_order();
-            if ($changed_keys_notice && (empty( $order_data ) || $collect_order_code !== $order_data['data']['code'])) {
-                $this->add_admin_notice( 'keys', 'notice notice-error', sprintf( __('Connection with Fiberpay service has been detected. Check if environment, API key, secret key, Collect order code and selected environment settings are correct.', 'fiberpay-payment-gateway' ), $setting_link ), true );
-            }
+			$order_data = FIBERPAYGW_Payment_Gateway::get_instance()->get_cached_collect_order();
+			if ( $changed_keys_notice && ( empty( $order_data ) || $collect_order_code !== $order_data['data']['code'] ) ) {
+				$this->add_admin_notice( 'keys', 'notice notice-error', __( 'Connection with Fiberpay service has been detected. Check if environment, API key, secret key, Collect order code and selected environment settings are correct.', 'fiberpay-payment-gateway' ), true );
+			}
 		}
 	}
 

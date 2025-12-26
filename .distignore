@@ -12,6 +12,9 @@
 phpcs.xml
 phpunit.xml
 phpstan.neon
+phpstan-baseline.neon
+phpstan-stubs.php
+phpstan-stubs-wc-blocks.php
 .phpcs.xml
 .php-cs-fixer.php
 
@@ -25,6 +28,19 @@ yarn.lock
 # Docker
 Dockerfile
 docker-compose.yml
+docker/*
+.dockerignore
+
+# Node modules (jeśli kiedykolwiek pojawią się lokalnie)
+node_modules/*
+
+# Vendor dev tooling (na wypadek zipowania po composer install z dev)
+vendor/bin/*
+vendor/phpstan/*
+vendor/phpcsstandards/*
+vendor/squizlabs/*
+vendor/dealerdirect/*
+vendor/wp-coding-standards/*
 
 # Build/Test/Documentation
 tests/*
@@ -33,6 +49,7 @@ build/*
 README.md
 CHANGELOG.md
 CONTRIBUTING.md
+AGENTS.md
 
 # Misc Development Files
 *.sql

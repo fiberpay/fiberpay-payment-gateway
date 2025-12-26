@@ -2,16 +2,16 @@
 # This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Fiberpay Payment Plugin 0.1.5\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/fiberpay-payments\n"
+"Project-Id-Version: Fiberpay Payment Gateway 0.1.9\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/fiberpay-payment-gateway\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-04-02T10:07:09+00:00\n"
+"POT-Creation-Date: 2025-12-26T22:21:39+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.11.0\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: fiberpay-payment-gateway\n"
 
 #. Plugin Name of the plugin
@@ -39,101 +39,120 @@ msgstr ""
 msgid "https://fiberpay.pl"
 msgstr ""
 
-#: includes/class-wc-fiberpay-admin-notices.php:96
+#: includes/class-fiberpaygw-admin-notices.php:97
 msgid "Fiberpay payment plugin - cURL is not installed."
 msgstr ""
 
-#: includes/class-wc-fiberpay-admin-notices.php:102
+#: includes/class-fiberpaygw-admin-notices.php:103
 msgid "Connection with Fiberpay service has been detected. Check if environment, API key, secret key, Collect order code and selected environment settings are correct."
 msgstr ""
 
-#: includes/class-wc-fiberpay-admin-notices.php:116
+#: includes/class-fiberpaygw-admin-notices.php:117
 msgid "Action failed. Please refresh the page and retry."
 msgstr ""
 
-#: includes/class-wc-fiberpay-admin-notices.php:120
+#: includes/class-fiberpaygw-admin-notices.php:121
 msgid "Current user can not manage woocommerce."
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:88
+#: includes/class-fiberpaygw-gateway.php:87
 msgid "Fiberpay"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:89
+#: includes/class-fiberpaygw-gateway.php:88
 msgid "Fiberpay payment gateway"
 msgstr ""
 
 #. translators: %d: order ID
-#: includes/class-wc-gateway-fiberpay.php:212
+#: includes/class-fiberpaygw-gateway.php:198
+#, php-format
 msgid "Order with id %d not found"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:302
+#: includes/class-fiberpaygw-gateway.php:276
 msgid "Enable/Disable"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:304
+#: includes/class-fiberpaygw-gateway.php:278
 msgid "Enable Fiberpay payments"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:308
+#: includes/class-fiberpaygw-gateway.php:282
 msgid "Title"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:310
+#: includes/class-fiberpaygw-gateway.php:284
 msgid "This controls the title which the user sees during checkout."
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:311
+#: includes/class-fiberpaygw-gateway.php:285
 msgid "Fiberpay quick money transfer"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:315
+#: includes/class-fiberpaygw-gateway.php:289
 msgid "Description"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:317
+#: includes/class-fiberpaygw-gateway.php:291
 msgid "Payment method description that the customer will see on your checkout."
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:318
+#: includes/class-fiberpaygw-gateway.php:292
 msgid "Make your payment with quick money transfer or traditional bank transfer."
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:322
-#: includes/class-wc-gateway-fiberpay.php:324
+#: includes/class-fiberpaygw-gateway.php:296
+#: includes/class-fiberpaygw-gateway.php:298
 msgid "Test Environment"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:325
+#: includes/class-fiberpaygw-gateway.php:299
 msgid "Check for test environment usage"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:330
+#: includes/class-fiberpaygw-gateway.php:304
 msgid "Api Key"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:332
+#: includes/class-fiberpaygw-gateway.php:306
 msgid "Your Fiberpay Api Key"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:336
+#: includes/class-fiberpaygw-gateway.php:310
 msgid "Secret Key"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:338
+#: includes/class-fiberpaygw-gateway.php:312
 msgid "Your Fiberpay Secret Key"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:342
+#: includes/class-fiberpaygw-gateway.php:316
 msgid "Collect order code"
 msgstr ""
 
-#: includes/class-wc-gateway-fiberpay.php:344
+#: includes/class-fiberpaygw-gateway.php:318
 msgid "Your Fiberpay Collect Order Code"
 msgstr ""
 
+#: includes/class-fiberpaygw-gateway.php:337
+msgid "Order not found"
+msgstr ""
+
+#: includes/class-fiberpaygw-gateway.php:356
+msgid "Payment gateway configuration error"
+msgstr ""
+
 #. translators: The first placeholder is a shop name, the second is a order identifier.
-#: includes/class-wc-gateway-fiberpay.php:372
+#: includes/class-fiberpaygw-gateway.php:363
+#, php-format
 msgid "%1$s - Payment for order #%2$s"
+msgstr ""
+
+#: includes/class-fiberpaygw-gateway.php:391
+#: includes/class-fiberpaygw-gateway.php:445
+msgid "Payment processing error"
+msgstr ""
+
+#: includes/class-fiberpaygw-gateway.php:409
+msgid "Invalid payment response"
 msgstr ""

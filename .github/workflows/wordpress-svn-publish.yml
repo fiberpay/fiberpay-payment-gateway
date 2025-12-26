@@ -37,7 +37,10 @@ jobs:
 
       - name: Extract release tag
         id: extract_tag
-        run: echo "tag=${GITHUB_REF#refs/tags/}" | sed 's/^v//' >> $GITHUB_OUTPUT
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          tag="${tag#v}"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
 
       - name: Install SVN
         run: sudo apt-get update && sudo apt-get install -y subversion
@@ -57,7 +60,8 @@ jobs:
         run: |
           cd svn
           mkdir -p trunk tags/${{ steps.extract_tag.outputs.tag }}
-          rm -rf trunk/*
+          # Remove tracked files properly so deletions are committed.
+          svn rm --force trunk/* 2>/dev/null || true
           svn add tags/${{ steps.extract_tag.outputs.tag }} --force
         working-directory: ./
 

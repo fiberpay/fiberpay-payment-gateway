@@ -71,8 +71,10 @@ The plugin automatically configures a callback URL that Fiberpay will use to not
 
 ### Version Compatibility
 
-- Current Version: 0.1.8 (Updated: May 2025)
-- WooCommerce Compatibility: Tested up to WooCommerce 8.5
+- Current Version: 0.1.9 (Updated: December 2025)
+- Tested with WordPress 6.9
+- Tested with WooCommerce 10.4.3
+- Tested with PHP 8.2.30
 - WooCommerce Blocks: Compatible with cart and checkout blocks
 
 ## Why Choose Fiberpay?

@@ -2,9 +2,11 @@
 Contributors: fiberpay
 Tags: payment gateway, woocommerce, fiberpay, blik, paybylink
 Requires at least: 5.0
-Tested up to: 6.8
+Tested up to: 6.9
+WC requires at least: 6.0
+WC tested up to: 10.4.3
 Requires PHP: 7.2
-Stable tag: 0.1.8
+Stable tag: 0.1.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +87,14 @@ Currently, the plugin only supports Polish Złoty (PLN) as this is the primary c
 Yes, the plugin includes a test environment option. We strongly recommend testing with a [sandbox account](https://test.fiberpay.pl) before using it in production.
 
 == Changelog ==
+
+= 0.1.9 =
+* Added PHPStan static analysis and PHPCS code quality tools
+* Fixed code style to comply with WordPress Coding Standards
+* Fixed variable naming conventions to use snake_case
+* Improved type safety with strict comparisons
+* Updated dev dependencies (WPCS 3.1, PHPStan 2.0)
+* Added quality checks to CI/CD pipeline
 
 = 0.1.8 =
 * Improved and streamlined CI/CD workflow

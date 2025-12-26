@@ -2,3 +2,8 @@
 .aider*
 .idea
 .DS_Store
+
+# Composer dependencies - installed via composer install
+/vendor
+
+# Keep composer.lock in git for reproducible builds
